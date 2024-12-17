@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Volkswagen Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            width: 80% !important;
+            height: 400px !important;
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h2>Volkswagen Interactive Dashboard</h2>
+    <button onclick="fetchData('sales')">Show Sales Data</button>
+    <button onclick="fetchData('production')">Show Production Data</button>
+    <button onclick="fetchData('expenses')">Show Expenses Data</button>
+    <canvas id="myChart"></canvas>
+
+    <form method="POST" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+
+    <script>
+        let chart;
+
+        async function fetchData(type) {
+            const response = await fetch(`/getData/${type}`);
+            if (!response.ok) {
+                alert('Error fetching data. Please check the server logs.');
+                return;
+            }
+
+            const data = await response.json();
+            renderChart(data.labels, data.values, type);
+        }
+
+        function renderChart(labels, values, title) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (chart) chart.destroy(); // Destroy existing chart
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `${title} Data`,
+                        data: values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
