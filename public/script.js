@@ -77,6 +77,47 @@ function fetchRevenueAndCosts() {
         .catch(err => console.error(`Error fetching revenue/costs data: ${err.message}`));
 }
 
+// Function for Expenses Chart
+function fetchExpenses() {
+    fetch('/getData/expenses')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.year);
+            const grossProfit = data.map(item => item.gross_profit);
+            const personnelExpenses = data.map(item => item.personnel_expenses);
+
+            const ctx = document.getElementById('chartCanvas').getContext('2d');
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Gross Profit (Million Euros)',
+                            data: grossProfit,
+                            backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                        },
+                        {
+                            label: 'Personnel Expenses (Million Euros)',
+                            data: personnelExpenses,
+                            backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: 'bottom' },
+                        title: { display: true, text: 'Gross Profit and Personnel Expenses per Year' }
+                    },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        })
+        .catch(err => console.error(`Error fetching expenses data: ${err.message}`));
+}
 // Generate random colors for bars
 function getRandomColor() {
     const r = Math.floor(Math.random() * 256);
@@ -104,4 +145,5 @@ document.getElementById('btnProductionGermany').addEventListener('click', () => 
 document.getElementById('btnProductionAbroad').addEventListener('click', () => {
     fetchDataAndDisplayChart('production_abroad', 'Production Abroad', 'Thousands');
 });
+document.getElementById('btnExpenses').addEventListener('click', fetchExpenses);
 document.getElementById('btnRevenueCosts').addEventListener('click', fetchRevenueAndCosts);
