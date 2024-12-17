@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Volkswagen Dashboard</title>
+    <title>Data Visualization</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -11,99 +11,44 @@
             margin: 20px;
             text-align: center;
         }
-        button {
-            margin: 10px;
-            padding: 10px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .chart-container {
-            position: relative;
-            width: 90%;
-            max-width: 1200px; /* Makes it larger */
-            margin: 20px auto;
-        }
         canvas {
-            width: 100% !important;
-            height: 500px !important; /* Adjust height for a larger chart */
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>Volkswagen Sales and Production Dashboard</h1>
+    <h1>Data Visualization Dashboard</h1>
 
-    <!-- Buttons -->
-    <div>
-        <button onclick="fetchData('sales')">Show Sales Data</button>
-        <button onclick="fetchData('production')">Show Production Data</button>
-        <button onclick="fetchData('sales_germany')">Show Sales Germany</button>
-        <button onclick="fetchData('sales_abroad')">Show Sales Abroad</button>
-        <button onclick="fetchData('production_germany')">Show Production Germany</button>
-        <button onclick="fetchData('production_abroad')">Show Production Abroad</button>
+    <div class="buttons">
+        <!-- Sales Buttons -->
+        <button id="btnSales">Show Sales Data</button>
+        <button id="btnSalesGermany">Show Sales Germany</button>
+        <button id="btnSalesAbroad">Show Sales Abroad</button>
+        
+        <!-- Production Buttons -->
+        <button id="btnProduction">Show Production Data</button>
+        <button id="btnProductionGermany">Show Production Germany</button>
+        <button id="btnProductionAbroad">Show Production Abroad</button>
+        
+        <!-- Revenue/Costs Button -->
+        <button id="btnRevenueCosts">Show Revenue and Costs</button>
     </div>
 
-    <!-- Chart Container -->
-    <div class="chart-container">
-        <canvas id="chart"></canvas>
-    </div>
+    <!-- Main Chart -->
+    <canvas id="chartCanvas"></canvas>
 
-    <script>
-        let chartInstance = null;
+    <!-- Revenue and Costs Chart -->
+    <canvas id="revenueCostsCanvas"></canvas>
 
-        // Fetch data from the server and render chart
-        async function fetchData(type) {
-            try {
-                const response = await fetch(`/getData/${type}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    renderChart(data.labels, data.values, type);
-                } else {
-                    alert('Error fetching data. Please check the server.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        // Render chart with Chart.js
-        function renderChart(labels, values, chartLabel) {
-            const ctx = document.getElementById('chart').getContext('2d');
-
-            // Destroy the previous chart instance if exists
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: chartLabel.replace('_', ' ').toUpperCase(),
-                        data: values,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, /* Allow custom dimensions */
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
