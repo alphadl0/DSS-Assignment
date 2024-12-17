@@ -53,12 +53,12 @@ function fetchRevenueAndCosts() {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Revenue (Million Euros)',
+                            label: 'Gelir (Milyon Euro)',
                             data: revenue,
                             backgroundColor: 'rgba(75, 192, 192, 0.7)',
                         },
                         {
-                            label: 'Costs (Million Euros)',
+                            label: 'Maliyetler (Milyon Euro)',
                             data: costs,
                             backgroundColor: 'rgba(255, 99, 132, 0.7)',
                         }
@@ -68,7 +68,7 @@ function fetchRevenueAndCosts() {
                     responsive: true,
                     plugins: {
                         legend: { display: true, position: 'bottom' },
-                        title: { display: true, text: 'Revenue and Costs per Year' }
+                        title: { display: true, text: 'Yıllık Gelir ve Maliyetler' }
                     },
                     scales: { y: { beginAtZero: true } }
                 }
@@ -95,12 +95,12 @@ function fetchExpenses() {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Gross Profit (Million Euros)',
+                            label: 'Brüt Kâr (Milyon Euro)',
                             data: grossProfit,
                             backgroundColor: 'rgba(153, 102, 255, 0.6)',
                         },
                         {
-                            label: 'Personnel Expenses (Million Euros)',
+                            label: 'Personel Giderleri (Milyon Euro)',
                             data: personnelExpenses,
                             backgroundColor: 'rgba(255, 206, 86, 0.6)',
                         }
@@ -110,7 +110,7 @@ function fetchExpenses() {
                     responsive: true,
                     plugins: {
                         legend: { display: true, position: 'bottom' },
-                        title: { display: true, text: 'Gross Profit and Personnel Expenses per Year' }
+                        title: { display: true, text: 'Yıllık Brüt Kâr ve Personel Giderleri' }
                     },
                     scales: { y: { beginAtZero: true } }
                 }
@@ -128,22 +128,22 @@ function getRandomColor() {
 
 // Event Listeners
 document.getElementById('btnSales').addEventListener('click', () => {
-    fetchDataAndDisplayChart('salesamount', 'Sales Data', 'Million Euros');
+    fetchDataAndDisplayChart('salesamount', 'Toplam satışlar', 'Binlerce');
 });
 document.getElementById('btnSalesGermany').addEventListener('click', () => {
-    fetchDataAndDisplayChart('sales_germany', 'Sales Germany', 'Thousands');
+    fetchDataAndDisplayChart('sales_germany', 'Almanya Satış', 'Binlerce');
 });
 document.getElementById('btnSalesAbroad').addEventListener('click', () => {
-    fetchDataAndDisplayChart('sales_abroad', 'Sales Abroad', 'Thousands');
+    fetchDataAndDisplayChart('sales_abroad', 'Yurtdışı Satış', 'Binlerce');
 });
 document.getElementById('btnProduction').addEventListener('click', () => {
-    fetchDataAndDisplayChart('production_total', 'Production Data', 'Thousands');
+    fetchDataAndDisplayChart('production_total', 'Üretim toplamı', 'Binlerce');
 });
 document.getElementById('btnProductionGermany').addEventListener('click', () => {
-    fetchDataAndDisplayChart('production_germany', 'Production Germany', 'Thousands');
+    fetchDataAndDisplayChart('production_germany', 'Üretim Almanya', 'Binlerce');
 });
 document.getElementById('btnProductionAbroad').addEventListener('click', () => {
-    fetchDataAndDisplayChart('production_abroad', 'Production Abroad', 'Thousands');
+    fetchDataAndDisplayChart('production_abroad', 'Yurtdışında Üretim', 'Binlerce');
 });
 document.getElementById('btnExpenses').addEventListener('click', fetchExpenses);
 document.getElementById('btnRevenueCosts').addEventListener('click', fetchRevenueAndCosts);
