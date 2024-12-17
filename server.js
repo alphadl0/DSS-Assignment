@@ -1,90 +1,105 @@
-// Import required modules
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const session = require('express-session');
-require('dotenv').config(); // Load environment variables from .env file
+const path = require('path');
 
-// Create an instance of the Express app
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
-// Setup body parsing middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Setup session management
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Use session secret from .env
+    secret: process.env.SESSION_SECRET || 'defaultsecret',
     resave: false,
     saveUninitialized: true
 }));
 
-// MySQL connection setup using environment variables from .env
+// Database connection
 const db = mysql.createConnection({
-    host: process.env.DB_HOST, // Database host from .env
-    user: process.env.DB_USER, // Database user from .env
-    password: process.env.DB_PASSWORD, // Database password from .env
-    database: process.env.DB_NAME // Database name from .env
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
-// Connect to the database
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
+db.connect(err => {
+    if (err) throw err;
     console.log('Connected to MySQL database');
 });
 
-// Serve the static files (for the frontend)
-app.use(express.static('public'));
+// Routes
+app.get('/', (req, res) => {
+    if (req.session.loggedIn) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+        res.redirect('/login');
+    }
+});
 
-// Define the login route
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-
-    // Simple check for username and password
     if (username === 'admin' && password === 'admin') {
         req.session.loggedIn = true;
         res.redirect('/');
     } else {
-        res.status(401).send('Invalid credentials');
+        res.send('Invalid credentials');
     }
 });
 
-// Define a route to fetch data based on type (sales, production, expenses)
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login');
+});
+
+// Data endpoints
 app.get('/getData/:type', (req, res) => {
-    const { type } = req.params;
+    const type = req.params.type;
     let query = '';
 
     switch (type) {
         case 'sales':
-            query = `SELECT Year, Sales_Total AS value FROM salesamount`; // Correct table name
+            query = 'SELECT Year, Revenue FROM sales';
             break;
         case 'production':
-            query = `SELECT Year, Production_Total AS value FROM production`;
+            query = 'SELECT Year, Production_Total FROM production';
             break;
-        case 'expenses':
-            query = `SELECT Year, Gross_profit AS value FROM expenses`;
+        case 'sales_germany':
+            query = 'SELECT Year, Sales_Germany FROM salesamount';
+            break;
+        case 'sales_abroad':
+            query = 'SELECT Year, Sales_Abroad FROM salesamount';
+            break;
+        case 'production_germany':
+            query = 'SELECT Year, Production_Germany FROM production';
+            break;
+        case 'production_abroad':
+            query = 'SELECT Year, Production_Abroad FROM production';
             break;
         default:
-            return res.status(400).send('Invalid data type requested');
+            res.json({ success: false, message: 'Invalid data type' });
+            return;
     }
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error(`Error fetching ${type} data:`, err.message);
-            return res.status(500).json({ error: 'Database query failed' });
+            console.error(err);
+            res.json({ success: false, message: 'Database error' });
+        } else {
+            const labels = results.map(row => row.Year);
+            const values = results.map(row => Object.values(row)[1]); // Get the second column dynamically
+            res.json({ success: true, labels, values });
         }
-
-        const labels = results.map(row => row.Year);
-        const values = results.map(row => row.value);
-
-        res.json({ labels, values });
     });
 });
 
 // Start the server
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });

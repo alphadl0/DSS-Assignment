@@ -2,53 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Volkswagen Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volkswagen Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        canvas {
-            width: 80% !important;
-            height: 400px !important;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        button {
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .chart-container {
+            position: relative;
+            width: 90%;
+            max-width: 1200px; /* Makes it larger */
             margin: 20px auto;
-            display: block;
+        }
+        canvas {
+            width: 100% !important;
+            height: 500px !important; /* Adjust height for a larger chart */
         }
     </style>
 </head>
 <body>
-    <h2>Volkswagen Interactive Dashboard</h2>
-    <button onclick="fetchData('sales')">Show Sales Data</button>
-    <button onclick="fetchData('production')">Show Production Data</button>
-    <button onclick="fetchData('expenses')">Show Expenses Data</button>
-    <canvas id="myChart"></canvas>
+    <h1>Volkswagen Sales and Production Dashboard</h1>
 
-    <form method="POST" action="/logout">
-        <button type="submit">Logout</button>
-    </form>
+    <!-- Buttons -->
+    <div>
+        <button onclick="fetchData('sales')">Show Sales Data</button>
+        <button onclick="fetchData('production')">Show Production Data</button>
+        <button onclick="fetchData('sales_germany')">Show Sales Germany</button>
+        <button onclick="fetchData('sales_abroad')">Show Sales Abroad</button>
+        <button onclick="fetchData('production_germany')">Show Production Germany</button>
+        <button onclick="fetchData('production_abroad')">Show Production Abroad</button>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
 
     <script>
-        let chart;
+        let chartInstance = null;
 
+        // Fetch data from the server and render chart
         async function fetchData(type) {
-            const response = await fetch(`/getData/${type}`);
-            if (!response.ok) {
-                alert('Error fetching data. Please check the server logs.');
-                return;
-            }
+            try {
+                const response = await fetch(`/getData/${type}`);
+                const data = await response.json();
 
-            const data = await response.json();
-            renderChart(data.labels, data.values, type);
+                if (data.success) {
+                    renderChart(data.labels, data.values, type);
+                } else {
+                    alert('Error fetching data. Please check the server.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
-        function renderChart(labels, values, title) {
-            const ctx = document.getElementById('myChart').getContext('2d');
-            if (chart) chart.destroy(); // Destroy existing chart
+        // Render chart with Chart.js
+        function renderChart(labels, values, chartLabel) {
+            const ctx = document.getElementById('chart').getContext('2d');
 
-            chart = new Chart(ctx, {
+            // Destroy the previous chart instance if exists
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: `${title} Data`,
+                        label: chartLabel.replace('_', ' ').toUpperCase(),
                         data: values,
                         backgroundColor: 'rgba(54, 162, 235, 0.6)',
                         borderColor: 'rgba(54, 162, 235, 1)',
@@ -57,6 +95,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, /* Allow custom dimensions */
                     scales: {
                         y: {
                             beginAtZero: true
