@@ -16,23 +16,26 @@ function fetchDataAndDisplayChart(type, label, unit) {
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: `${label} (${unit})`,
-                        data: values,
-                        backgroundColor: labels.map(() => getRandomColor()),
-                    }]
+                    datasets: [
+                        {
+                            label: `${label} (${unit})`,
+                            data: values,
+                            backgroundColor: labels.map(() => getRandomColor()),
+                        },
+                    ],
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Allows height/width customization
                     plugins: {
                         legend: { display: true, position: 'bottom' },
-                        title: { display: true, text: label }
+                        title: { display: true, text: label },
                     },
-                    scales: { y: { beginAtZero: true } }
-                }
+                    scales: { y: { beginAtZero: true } },
+                },
             });
         })
-        .catch(err => console.error(`Error fetching data: ${err.message}`));
+        .catch((err) => console.error(`Error fetching data: ${err.message}`));
 }
 
 // Function for Revenue and Costs Chart
@@ -53,28 +56,59 @@ function fetchRevenueAndCosts() {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Maliyetler (Milyon Euro)',
+                            label: 'Gelir (Milyon Euro)', // Revenue
                             data: revenue,
-                            backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4, // Smooth curve
                         },
                         {
-                            label: 'Gelir (Milyon Euro)',
+                            label: 'Maliyetler (Milyon Euro)', // Costs
                             data: costs,
-                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                        }
-                    ]
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4, // Smooth curve
+                        },
+                    ],
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Allows height/width customization
                     plugins: {
-                        legend: { display: true, position: 'bottom' },
-                        title: { display: true, text: 'Yıllık Gelir ve Maliyetler' }
+                        legend: {
+                            display: true,
+                            position: 'bottom', // Legend at the bottom
+                        },
+                        title: {
+                            display: true,
+                            text: 'Yıllık Gelir ve Maliyetler',
+                        },
                     },
-                    scales: { y: { beginAtZero: true } }
-                }
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Milyon Euro', // Y-axis label
+                            },
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Yıllar', // X-axis label
+                            },
+                        },
+                    },
+                },
             });
         })
-        .catch(err => console.error(`Error fetching revenue/costs data: ${err.message}`));
+        .catch((err) =>
+            console.error(`Error fetching revenue/costs data: ${err.message}`)
+        );
 }
 
 // Function for Expenses Chart
@@ -103,21 +137,23 @@ function fetchExpenses() {
                             label: 'Personel Giderleri (Milyon Euro)',
                             data: personnelExpenses,
                             backgroundColor: 'rgba(255, 206, 86, 0.6)',
-                        }
-                    ]
+                        },
+                    ],
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Allows height/width customization
                     plugins: {
                         legend: { display: true, position: 'bottom' },
-                        title: { display: true, text: 'Yıllık Brüt Kâr ve Personel Giderleri' }
+                        title: { display: true, text: 'Yıllık Brüt Kâr ve Personel Giderleri' },
                     },
-                    scales: { y: { beginAtZero: true } }
-                }
+                    scales: { y: { beginAtZero: true } },
+                },
             });
         })
-        .catch(err => console.error(`Error fetching expenses data: ${err.message}`));
+        .catch((err) => console.error(`Error fetching expenses data: ${err.message}`));
 }
+
 // Generate random colors for bars
 function getRandomColor() {
     const r = Math.floor(Math.random() * 256);
@@ -147,4 +183,3 @@ document.getElementById('btnProductionAbroad').addEventListener('click', () => {
 });
 document.getElementById('btnExpenses').addEventListener('click', fetchExpenses);
 document.getElementById('btnRevenueCosts').addEventListener('click', fetchRevenueAndCosts);
-

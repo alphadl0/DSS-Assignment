@@ -22,7 +22,41 @@ async function fetchDataAndRenderCharts() {
                     { label: 'Costs', data: costs, backgroundColor: 'rgba(255, 99, 132, 0.6)' }
                 ]
             },
-            options: { responsive: true }
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16 // Increase legend font size
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sales Chart',
+                        font: {
+                            size: 20 // Increase title font size
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14 // Increase x-axis font size
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 14 // Increase y-axis font size
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         // Production Chart
@@ -35,7 +69,41 @@ async function fetchDataAndRenderCharts() {
                     { label: 'Production Total', data: productionTotal, borderColor: 'rgba(75, 192, 192, 1)', fill: false }
                 ]
             },
-            options: { responsive: true }
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16 // Increase legend font size
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Production Chart',
+                        font: {
+                            size: 20 // Increase title font size
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14 // Increase x-axis font size
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 14 // Increase y-axis font size
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         // Expenses Chart
@@ -49,7 +117,41 @@ async function fetchDataAndRenderCharts() {
                     { label: 'Personnel Expenses', data: personnelExpenses, backgroundColor: 'rgba(255, 206, 86, 0.6)' }
                 ]
             },
-            options: { responsive: true }
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16 // Increase legend font size
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Expenses Chart',
+                        font: {
+                            size: 20 // Increase title font size
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14 // Increase x-axis font size
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 14 // Increase y-axis font size
+                            }
+                        }
+                    }
+                }
+            }
         });
 
     } catch (error) {

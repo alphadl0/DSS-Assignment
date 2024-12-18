@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 // Login route
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    if (username === 'admin' && password === 'admin') {
+    if (username === 'alpha' && password === 'alpha') {
         req.session.user = username;
         res.redirect('/dashboard');
     } else {

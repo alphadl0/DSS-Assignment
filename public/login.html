@@ -3,18 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Admin Login</title>
+    <style>
+        /* Body and General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #b3d9ff, #003f74); /* Light to dark blue gradient */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Centered Container */
+        .login-container {
+            background: #ffffff; /* White background for form container */
+            color: #003f74; /* Dark blue text */
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Header */
+        .login-container h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #002244;
+        }
+
+        /* Form Styling */
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Label Styling */
+        .login-container label {
+            font-size: 1em;
+            color: #002244; /* Dark blue for labels */
+        }
+
+        /* Input Styling */
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            font-size: 1em;
+            padding: 10px;
+            border: 2px solid #b3d9ff; /* Light blue border */
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #005ea8; /* Focused border */
+            box-shadow: 0 0 8px rgba(0, 94, 168, 0.5); /* Glow effect */
+            outline: none;
+        }
+
+        /* Button Styling */
+        .login-container button {
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #ffffff;
+            background: #005ea8; /* Dark blue background */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .login-container button:hover {
+            background: linear-gradient(135deg, #003f74, #005ea8); /* Gradient effect on hover */
+            transform: scale(1.05); /* Slight zoom-in effect */
+        }
+
+        /* Info Text Styling */
+        .login-container .info-text {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="/login" method="POST">
-        <label for="username">Username: </label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password: </label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <button type="submit">Login</button>
-    </form>
+    <div class="login-container">
+        <h1>Admin Login</h1>
+        <form action="/login" method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter admin username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter admin password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+        <div class="info-text">
+            <p>Access is restricted to authorized personnel only.</p>
+        </div>
+    </div>
 </body>
 </html>
