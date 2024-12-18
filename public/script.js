@@ -48,17 +48,17 @@ function fetchRevenueAndCosts() {
             if (revenueCostsChart) revenueCostsChart.destroy();
 
             revenueCostsChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Gelir (Milyon Euro)',
+                            label: 'Maliyetler (Milyon Euro)',
                             data: revenue,
                             backgroundColor: 'rgba(75, 192, 192, 0.7)',
                         },
                         {
-                            label: 'Maliyetler (Milyon Euro)',
+                            label: 'Gelir (Milyon Euro)',
                             data: costs,
                             backgroundColor: 'rgba(255, 99, 132, 0.7)',
                         }
@@ -147,3 +147,4 @@ document.getElementById('btnProductionAbroad').addEventListener('click', () => {
 });
 document.getElementById('btnExpenses').addEventListener('click', fetchExpenses);
 document.getElementById('btnRevenueCosts').addEventListener('click', fetchRevenueAndCosts);
+

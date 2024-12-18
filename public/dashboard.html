@@ -3,89 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Data Visualization</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 100px;
             text-align: center;
         }
-        .container {
-            margin: 20px;
-        }
         canvas {
-            margin: 20px auto;
-            width: 70% !important;
-            height: 400px !important;
+            margin: 100px auto;
+            max-width: 1500px;
+        }
+        .buttons {
+            margin-bottom: 20px;
         }
         button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            margin: 5px;
+            padding: 10px 15px;
             cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
         }
     </style>
 </head>
 <body>
-    <h1>Volkswagen Data Dashboard</h1>
-    <div class="container">
-        <button onclick="fetchData('production')">Production</button>
-        <button onclick="fetchData('sales')">Sales</button>
-        <button onclick="fetchData('expenses')">Expenses</button>
+    <h1>Volkswagen KDS</h1>
+
+    <div class="buttons">
+        <!-- Sales Buttons -->
+        <button id="btnSales">Toplam satışlar</button>
+        <button id="btnSalesGermany">Almanya Satış</button>
+        <button id="btnSalesAbroad">Yurtdışı Satışları</button>
+        
+        <!-- Production Buttons -->
+        <button id="btnProduction">Üretim Toplam</button>
+        <button id="btnProductionGermany">Üretim Almanya</button>
+        <button id="btnProductionAbroad">Yurtdışında Üretim</button>
+        <button id="btnExpenses">Giderler</button>
+        
+        <!-- Revenue/Costs Button -->
+        <button id="btnRevenueCosts">Gelir ve Maliyetler</button>
     </div>
-    <canvas id="chart"></canvas>
 
-    <script>
-        let currentChart = null;
+    <!-- Main Chart -->
+    <canvas id="chartCanvas"></canvas>
 
-        function fetchData(type) {
-            fetch(`/getData/${type}`)
-                .then(response => response.json())
-                .then(data => {
-                    renderChart(data.labels, data.values, type);
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Failed to load data.');
-                });
-        }
+    <!-- Revenue and Costs Chart -->
+    <canvas id="revenueCostsCanvas"></canvas>
 
-        function renderChart(labels, values, type) {
-            const ctx = document.getElementById('chart').getContext('2d');
-            if (currentChart) {
-                currentChart.destroy();
-            }
-
-            currentChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `${type.charAt(0).toUpperCase() + type.slice(1)} Data`,
-                        data: values,
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

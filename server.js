@@ -7,6 +7,16 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Initialize session middleware
+app.use(session({
+    secret: 'alpha123',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 // Database connection
 const db = mysql.createConnection({
@@ -24,21 +34,20 @@ db.connect(err => {
     }
 });
 
+// Redirect root URL to login page
+app.get('/', (req, res) => {
+    res.redirect('/login.html');
+});
+
 // Login route
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    db.query(query, [username, password], (err, results) => {
-        if (err) {
-            console.error(err.message);
-            res.status(500).send('Database query error');
-        } else if (results.length > 0) {
-            req.session.user = username;
-            res.redirect('/dashboard');
-        } else {
-            res.send('Invalid username or password');
-        }
-    });
+    if (username === 'admin' && password === 'admin') {
+        req.session.user = username;
+        res.redirect('/dashboard');
+    } else {
+        res.send('Invalid username or password');
+    }
 });
 
 // Middleware to protect routes

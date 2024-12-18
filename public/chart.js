@@ -41,7 +41,7 @@ async function fetchDataAndRenderCharts() {
         // Expenses Chart
         const expensesChartCtx = document.getElementById('expensesChart').getContext('2d');
         new Chart(expensesChartCtx, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: years,
                 datasets: [
