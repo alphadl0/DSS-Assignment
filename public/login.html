@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +11,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, rgba(0, 63, 116, 0.8), rgba(179, 217, 255, 0.8)), 
-                        url('volks.png') no-repeat center center fixed;
+            background: linear-gradient(135deg, rgba(0, 63, 116, 0.8), rgba(179, 217, 255, 0.8)),
+                url('volks.png') no-repeat center center fixed;
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -28,15 +29,48 @@
             animation: float 8s infinite ease-in-out;
         }
 
-        .floating-icon:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
-        .floating-icon:nth-child(2) { top: 30%; left: 70%; animation-delay: 2s; }
-        .floating-icon:nth-child(3) { top: 50%; left: 30%; animation-delay: 4s; }
-        .floating-icon:nth-child(4) { top: 70%; left: 80%; animation-delay: 6s; }
-        .floating-icon:nth-child(5) { top: 20%; left: 50%; animation-delay: 8s; }
+        .floating-icon:nth-child(1) {
+            top: 10%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 30%;
+            left: 70%;
+            animation-delay: 2s;
+        }
+
+        .floating-icon:nth-child(3) {
+            top: 50%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        .floating-icon:nth-child(4) {
+            top: 70%;
+            left: 80%;
+            animation-delay: 6s;
+        }
+
+        .floating-icon:nth-child(5) {
+            top: 20%;
+            left: 50%;
+            animation-delay: 8s;
+        }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); opacity: 0.8; }
-            50% { transform: translateY(-20px); opacity: 1; }
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translateY(-20px);
+                opacity: 1;
+            }
         }
 
         /* Centered Container */
@@ -124,13 +158,25 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Welcome Modal */
@@ -170,6 +216,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Floating Icons -->
     <div class="floating-icon">⚙️</div>
@@ -184,10 +231,11 @@
         <form id="loginForm" action="/dashboard.html" method="POST">
             <label for="username">kullanıcı adı</label>
             <input type="text" id="username" name="username" placeholder="" required autocomplete="username">
-            
+
             <label for="password">Şifre</label>
-            <input type="password" id="password" name="password" placeholder="" required autocomplete="current-password">
-            
+            <input type="password" id="password" name="password" placeholder="" required
+                autocomplete="current-password">
+
             <button type="submit">
                 Login
                 <div class="spinner" id="spinner"></div>
@@ -207,20 +255,20 @@
         const loginButton = document.querySelector('button');
         const spinner = document.getElementById('spinner');
         const welcomeModal = document.getElementById('welcomeModal');
-    
+
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault(); // Prevent form from submitting
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-    
+
             loginButton.disabled = true;
             spinner.style.display = 'inline-block';
-    
+
             // Simulate server delay
             setTimeout(() => {
                 spinner.style.display = 'none';
                 loginButton.disabled = false;
-    
+
                 if (username === 'alpha' && password === 'alpha') {
                     // Show welcome modal if credentials are correct
                     welcomeModal.classList.add('active');
@@ -234,6 +282,7 @@
             }, 1500); // Simulate server processing time
         });
     </script>
-    
+
 </body>
+
 </html>
