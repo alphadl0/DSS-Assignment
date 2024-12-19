@@ -10,52 +10,71 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #b3d9ff, #003f74); /* Light to dark blue gradient */
-            color: #ffffff;
+            background: linear-gradient(135deg, rgba(0, 63, 116, 0.8), rgba(179, 217, 255, 0.8)), 
+                        url('volks.png') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Floating Icons */
+        .floating-icon {
+            position: absolute;
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.3);
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .floating-icon:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 30%; left: 70%; animation-delay: 2s; }
+        .floating-icon:nth-child(3) { top: 50%; left: 30%; animation-delay: 4s; }
+        .floating-icon:nth-child(4) { top: 70%; left: 80%; animation-delay: 6s; }
+        .floating-icon:nth-child(5) { top: 20%; left: 50%; animation-delay: 8s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); opacity: 0.8; }
+            50% { transform: translateY(-20px); opacity: 1; }
         }
 
         /* Centered Container */
         .login-container {
-            background: #ffffff; /* White background for form container */
-            color: #003f74; /* Dark blue text */
+            background: rgba(255, 255, 255, 0.9);
+            color: #003f74;
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
             text-align: center;
             width: 100%;
             max-width: 400px;
+            animation: slideIn 1.5s ease-out;
+            z-index: 2;
         }
 
-        /* Header */
         .login-container h1 {
             font-size: 1.8em;
             margin-bottom: 20px;
             color: #002244;
         }
 
-        /* Form Styling */
         .login-container form {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
 
-        /* Label Styling */
         .login-container label {
             font-size: 1em;
-            color: #002244; /* Dark blue for labels */
+            color: #002244;
         }
 
-        /* Input Styling */
         .login-container input[type="text"],
         .login-container input[type="password"] {
             font-size: 1em;
             padding: 10px;
-            border: 2px solid #b3d9ff; /* Light blue border */
+            border: 2px solid #b3d9ff;
             border-radius: 8px;
             width: 100%;
             box-sizing: border-box;
@@ -64,52 +83,157 @@
 
         .login-container input[type="text"]:focus,
         .login-container input[type="password"]:focus {
-            border-color: #005ea8; /* Focused border */
-            box-shadow: 0 0 8px rgba(0, 94, 168, 0.5); /* Glow effect */
+            border-color: #005ea8;
+            box-shadow: 0 0 8px rgba(0, 94, 168, 0.5);
             outline: none;
         }
 
-        /* Button Styling */
         .login-container button {
             padding: 12px 20px;
             font-size: 1em;
             font-weight: bold;
             color: #ffffff;
-            background: #005ea8; /* Dark blue background */
+            background: #005ea8;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .login-container button:hover {
-            background: linear-gradient(135deg, #003f74, #005ea8); /* Gradient effect on hover */
-            transform: scale(1.05); /* Slight zoom-in effect */
+            background: linear-gradient(135deg, #003f74, #005ea8);
+            transform: scale(1.05);
         }
 
-        /* Info Text Styling */
-        .login-container .info-text {
-            margin-top: 15px;
-            font-size: 0.9em;
-            color: #555;
+        .login-container button:active {
+            transform: scale(0.95);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 3px solid transparent;
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Welcome Modal */
+        .welcome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            z-index: 10;
+        }
+
+        .welcome-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .welcome-message {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-message h2 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #003f74;
         }
     </style>
 </head>
 <body>
+    <!-- Floating Icons -->
+    <div class="floating-icon">⚙️</div>
+    <div class="floating-icon">🚗</div>
+    <div class="floating-icon">🔧</div>
+    <div class="floating-icon">📈</div>
+    <div class="floating-icon">🌍</div>
+
+    <!-- Login Form -->
     <div class="login-container">
         <h1>Admin Login</h1>
-        <form action="/login" method="POST">
+        <form id="loginForm" action="/dashboard.html" method="POST">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="Enter admin username" required>
             
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter admin password" required>
             
-            <button type="submit">Login</button>
+            <button type="submit">
+                Login
+                <div class="spinner" id="spinner"></div>
+            </button>
         </form>
-        <div class="info-text">
-            <p>Access is restricted to authorized personnel only.</p>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div class="welcome-modal" id="welcomeModal">
+        <div class="welcome-message">
+            <h2>Welcome Alpha Diallo</h2>
         </div>
     </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginButton = document.querySelector('button');
+        const spinner = document.getElementById('spinner');
+        const welcomeModal = document.getElementById('welcomeModal');
+    
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent form from submitting
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+    
+            loginButton.disabled = true;
+            spinner.style.display = 'inline-block';
+    
+            // Simulate server delay
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                loginButton.disabled = false;
+    
+                if (username === 'alpha' && password === 'alpha') {
+                    // Show welcome modal if credentials are correct
+                    welcomeModal.classList.add('active');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html'; // Redirect to dashboard
+                    }, 2000); // Display modal for 2 seconds
+                } else {
+                    // Show error message for incorrect credentials
+                    alert('Wrong credentials, try again.');
+                }
+            }, 1500); // Simulate server processing time
+        });
+    </script>
+    
 </body>
 </html>
