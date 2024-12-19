@@ -13,7 +13,7 @@ const login = (req, res) => {
     req.session.user = username;
     res.redirect("/dashboard");
   } else {
-    res.send("Invalid username or password");
+    res.send("Geçersiz kullanıcı adı veya şifre");
   }
 };
 
