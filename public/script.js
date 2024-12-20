@@ -169,7 +169,13 @@ function getRandomColor() {
   return `rgba(${r}, ${g}, ${b}, 0.7)`;
 }
 
-// Event Listeners
+// Automatically load "Giderler" and "Gelir ve Maliyetler" charts on page load
+document.addEventListener("DOMContentLoaded", () => {
+  fetchExpenses(); // Automatically fetch and display the Expenses chart
+  fetchRevenueAndCosts(); // Automatically fetch and display the Revenue and Costs chart
+});
+
+// Event Listeners for other charts
 document.getElementById("btnSales").addEventListener("click", () => {
   fetchDataAndDisplayChart("salesamount", "Toplam satışlar", "Binlerce");
 });
