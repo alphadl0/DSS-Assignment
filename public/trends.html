@@ -4,81 +4,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Trends</title>
+    <title>Trends and Situation</title>
+    <link rel="stylesheet" href="trends.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding: 0;
-            margin: 0;
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             background: url('pic.png') no-repeat center center fixed;
             background-size: cover;
+            margin: 0;
+            padding: 20px;
         }
 
         .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            display: flex;
+            align-items: center;
             padding: 10px 15px;
             color: #fff;
             background: #005ea8;
             border: none;
             border-radius: 5px;
             text-decoration: none;
-            text-align: center;
             font-weight: bold;
-            display: inline-flex;
+            font-size: 18px;
+            /* Increase font size */
+            margin-bottom: 20px;
+            /* Add margin to separate the button from the chart box */
         }
 
         .back-button:hover {
             background: #003f74;
         }
 
+        .back-button .material-icons {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+
         .trend-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 100%;
-        }
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        align-items: stretch; /* Ensure all items are the same height */
+        max-width: 100%;
+        margin: 0 auto; /* Center align horizontally */
+    }
 
-        .trend-section {
-            flex: 1;
-            min-width: 300px;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .trend-section {
+        flex: 1;
+        min-width: 300px;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Ensure content is spaced evenly */
+    }
 
-        .trend-section h2 {
-            color: #005ea8;
-        }
+    .trend-section h2 {
+        color: #005ea8;
+    }
 
-        .trend-section p {
-            margin: 10px 0;
-        }
+    .chart-box {
+        width: calc(100% - 40px); /* Match the width of the trend containers */
+        max-width: 400px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px 0 0 0; /* Align to the left and add top margin */
+    }
+
+    .chart-info {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #333;
+    }
     </style>
 </head>
 
 <body>
     <a href="dashboard.html" class="back-button">
-        <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">arrow_back</span>
-        Back to Dashboard
+        <span class="material-icons">arrow_back</span>
+        <span>Back to Dashboard</span>
     </a>
     <div class="trend-container">
         <div class="trend-section">
             <h2>1. Global Automotive Market Trends</h2>
-            <p><strong>Sales Growth:</strong> Global passenger vehicle sales are projected to reach 94.7 million units
-                in 2024, marking a 3.3% increase from 2023. This growth rate is a deceleration compared to the 11.7%
-                observed in 2023, indicating a potential market stabilization.</p>
             <p><strong>Electric Vehicle (EV) Adoption:</strong> The EV market is experiencing a mild slowdown, though
                 its sales growth remains stronger than that of internal combustion engine vehicles. In the U.S., EV
                 sales in 2024 are expected to grow year-over-year by 16%, a decrease from approximately 64% in 2023. In
@@ -90,22 +110,83 @@
                 merger to address competitive pressures from Tesla and Chinese automakers. Such a merger would position
                 them as the world's third-largest auto group by vehicle sales, potentially intensifying competition for
                 Volkswagen.</p>
-            <p><strong>Volkswagen's Performance:</strong> Volkswagen anticipates a 3% rise in car sales for 2024, a
-                significant decline from the growth experienced in 2023. This outlook reflects a challenging economic
-                environment and increasing competition.</p>
         </div>
         <div class="trend-section">
             <h2>3. Market Challenges and Opportunities</h2>
-            <p><strong>Pricing Dynamics:</strong> New car prices are stabilizing as supply increases, with average
-                prices dropping from $50,300 in mid-2023 to around $49,000. Dealerships are offering greater incentives,
-                such as rebates and low-cost financing, which now constitute 8% of the average transaction, up from 2%
-                in 2022.</p>
             <p><strong>Consumer Preferences:</strong> There is a growing consumer shift towards compact cars and
                 electric vehicles, driven by affordability concerns and environmental considerations. This trend
                 presents opportunities for manufacturers to diversify their product lines to meet evolving consumer
                 demands.</p>
         </div>
     </div>
+    <div class="chart-box">
+        <canvas id="doughnutChart" width="400" height="400"></canvas>
+        <div class="chart-info">
+            <p>This chart represents the market share of different companies. Each segment shows the percentage of the
+                market held by a specific company.</p>
+        </div>
+    </div>
+    <script>
+        async function fetchSituationData() {
+            const response = await fetch('/situationData');
+            const data = await response.json();
+            return data;
+        }
+
+        function renderDoughnutChart(data) {
+            const ctx = document.getElementById('doughnutChart').getContext('2d');
+            const labels = data.map(item => item.company_name);
+            const values = data.map(item => item.market_share);
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgba(139, 0, 0, 0.8)',    // Dark Red
+                            'rgba(0, 0, 139, 0.8)',    // Dark Blue
+                            'rgba(184, 134, 11, 0.8)', // Dark Goldenrod
+                            'rgba(0, 100, 0, 0.8)',    // Dark Green
+                            'rgba(72, 61, 139, 0.8)',  // Dark Slate Blue
+                            'rgba(139, 69, 19, 0.8)',  // Saddle Brown
+                            'rgba(128, 0, 128, 0.8)',  // Purple
+                            'rgba(0, 128, 128, 0.8)',  // Teal
+                            'rgba(255, 69, 0, 0.8)'    // Orange Red
+                        ],
+                        borderColor: [
+                            'rgba(139, 0, 0, 1)',
+                            'rgba(0, 0, 139, 1)',
+                            'rgba(184, 134, 11, 1)',
+                            'rgba(0, 100, 0, 1)',
+                            'rgba(72, 61, 139, 1)',
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(128, 0, 128, 1)',
+                            'rgba(0, 128, 128, 1)',
+                            'rgba(255, 69, 0, 1)'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 10 // Add separation effect on hover/touch
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Market Share by Company'
+                        }
+                    }
+                }
+            });
+        }
+
+        fetchSituationData().then(data => renderDoughnutChart(data));
+    </script>
 </body>
 
 </html>
