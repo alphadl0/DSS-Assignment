@@ -47,47 +47,52 @@
 
 
         .trend-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
-        align-items: stretch; /* Ensure all items are the same height */
-        max-width: 100%;
-        margin-left: 0 auto; /* Center align horizontally */
-    }
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            /* Ensure all items are the same height */
+            max-width: 100%;
+            margin-left: 0 auto;
+            /* Center align horizontally */
+        }
 
-    .trend-section {
-        flex: 1;
-        min-width: 300px;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; /* Ensure content is spaced evenly */
-    }
+        .trend-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Ensure content is spaced evenly */
+        }
 
-    .trend-section h2 {
-        color: #005ea8;
-    }
+        .trend-section h2 {
+            color: #005ea8;
+        }
 
-    .chart-box {
-        width: calc(100% - 40px); /* Match the width of the trend containers */
-        max-width: 400px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px 0 0 0; /* Align to the left and add top margin */
-    }
+        .chart-box {
+            width: calc(100% - 40px);
+            /* Match the width of the trend containers */
+            max-width: 400px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0 0 0;
+            /* Align to the left and add top margin */
+        }
 
-    .chart-info {
-        margin-top: 20px;
-        font-size: 16px;
-        color: #333;
-    }
+        .chart-info {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
     </style>
 </head>
 
@@ -134,38 +139,43 @@
         }
 
         function renderDoughnutChart(data) {
+            // Sort data in descending order based on market share
+            data.sort((a, b) => b.market_share - a.market_share);
+
             const ctx = document.getElementById('doughnutChart').getContext('2d');
             const labels = data.map(item => item.company_name);
             const values = data.map(item => item.market_share);
+            const colors = [
+                'rgba(139, 0, 0, 0.8)',    // Dark Red
+                'rgba(0, 0, 139, 0.8)',    // Dark Blue
+                'rgba(184, 134, 11, 0.8)', // Dark Goldenrod
+                'rgba(0, 100, 0, 0.8)',    // Dark Green
+                'rgba(72, 61, 139, 0.8)',  // Dark Slate Blue
+                'rgba(139, 69, 19, 0.8)',  // Saddle Brown
+                'rgba(128, 0, 128, 0.8)',  // Purple
+                'rgba(0, 128, 128, 0.8)',  // Teal
+                'rgba(255, 69, 0, 0.8)'    // Orange Red
+            ];
+            const borderColors = [
+                'rgba(139, 0, 0, 1)',
+                'rgba(0, 0, 139, 1)',
+                'rgba(184, 134, 11, 1)',
+                'rgba(0, 100, 0, 1)',
+                'rgba(72, 61, 139, 1)',
+                'rgba(139, 69, 19, 1)',
+                'rgba(128, 0, 128, 1)',
+                'rgba(0, 128, 128, 1)',
+                'rgba(255, 69, 0, 1)'
+            ];
 
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
+                    labels: labels.map((label, index) => `${index + 1}. ${label}`),
                     datasets: [{
                         data: values,
-                        backgroundColor: [
-                            'rgba(139, 0, 0, 0.8)',    // Dark Red
-                            'rgba(0, 0, 139, 0.8)',    // Dark Blue
-                            'rgba(184, 134, 11, 0.8)', // Dark Goldenrod
-                            'rgba(0, 100, 0, 0.8)',    // Dark Green
-                            'rgba(72, 61, 139, 0.8)',  // Dark Slate Blue
-                            'rgba(139, 69, 19, 0.8)',  // Saddle Brown
-                            'rgba(128, 0, 128, 0.8)',  // Purple
-                            'rgba(0, 128, 128, 0.8)',  // Teal
-                            'rgba(255, 69, 0, 0.8)'    // Orange Red
-                        ],
-                        borderColor: [
-                            'rgba(139, 0, 0, 1)',
-                            'rgba(0, 0, 139, 1)',
-                            'rgba(184, 134, 11, 1)',
-                            'rgba(0, 100, 0, 1)',
-                            'rgba(72, 61, 139, 1)',
-                            'rgba(139, 69, 19, 1)',
-                            'rgba(128, 0, 128, 1)',
-                            'rgba(0, 128, 128, 1)',
-                            'rgba(255, 69, 0, 1)'
-                        ],
+                        backgroundColor: colors.slice(0, data.length),
+                        borderColor: borderColors.slice(0, data.length),
                         borderWidth: 1,
                         hoverOffset: 10 // Add separation effect on hover/touch
                     }]
@@ -174,11 +184,18 @@
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'top',
+                            position: 'left', // Position legend on the left
+                            align: 'start', // Align legend items vertically
                         },
                         title: {
                             display: true,
-                            text: 'Market Share by Company'
+                            text: 'Market Share by Company',
+                            position: 'top',
+                            align: 'end', // Align title to the right
+                            padding: {
+                                top: 10,
+                                bottom: 30
+                            }
                         }
                     }
                 }
