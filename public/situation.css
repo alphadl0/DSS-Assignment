@@ -9,11 +9,18 @@ body {
 }
 
 .chart-box {
-    width: 30%;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
+    width: 30%; /* Make the chart box smaller */
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
+}
+
+.chart-info {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
 }
 
 .back-button {
