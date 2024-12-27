@@ -31,6 +31,18 @@ const dashboard = (req, res) => {
   res.sendFile(path.join(__dirname, "../public/dashboard.html"));
 };
 
+const getSituationData = (req, res) => {
+  const query = "SELECT company_name, market_share FROM situation";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Database query error" });
+    } else {
+      res.json(results);
+    }
+  });
+};
+
 // Fetch data logic
 const getData = (req, res) => {
   const { type } = req.params;
@@ -81,4 +93,5 @@ module.exports = {
   isAuthenticated,
   dashboard,
   getData,
+  getSituationData,
 };

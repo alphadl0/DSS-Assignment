@@ -10,4 +10,6 @@ router.post("/login", controller.login);
 router.get("/dashboard", controller.isAuthenticated, controller.dashboard);
 router.get("/getData/:type", controller.getData);
 
+router.get("/situationData", controller.getSituationData);
+
 module.exports = router;

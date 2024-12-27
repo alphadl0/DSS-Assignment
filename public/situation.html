@@ -1,20 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Situation</title>
-    <link href="styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="situation.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="situation.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
     <a href="dashboard.html" class="back-button">
-        <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">arrow_back</span>
-        Back to Dashboard
+        <span class="material-icons">arrow_back</span>
+        <span>Back to Dashboard</span>
     </a>
-</body>
+    <div class="chart-box">
+        <canvas id="pieChart" width="400" height="400"></canvas>
+    </div>
+    <script>
+        async function fetchSituationData() {
+            const response = await fetch('/situationData');
+            const data = await response.json();
+            return data;
+        }
 
+        function renderPieChart(data) {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            const labels = data.map(item => item.company_name);
+            const values = data.map(item => item.market_share);
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgba(139, 0, 0, 0.8)',    // Dark Red
+                            'rgba(0, 0, 139, 0.8)',    // Dark Blue
+                            'rgba(184, 134, 11, 0.8)', // Dark Goldenrod
+                            'rgba(0, 100, 0, 0.8)',    // Dark Green
+                            'rgba(72, 61, 139, 0.8)',  // Dark Slate Blue
+                            'rgba(139, 69, 19, 0.8)',  // Saddle Brown
+                            'rgba(128, 0, 128, 0.8)',  // Purple
+                            'rgba(0, 128, 128, 0.8)',  // Teal
+                            'rgba(255, 69, 0, 0.8)'    // Orange Red
+                        ],
+                        borderColor: [
+                            'rgba(139, 0, 0, 1)',
+                            'rgba(0, 0, 139, 1)',
+                            'rgba(184, 134, 11, 1)',
+                            'rgba(0, 100, 0, 1)',
+                            'rgba(72, 61, 139, 1)',
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(128, 0, 128, 1)',
+                            'rgba(0, 128, 128, 1)',
+                            'rgba(255, 69, 0, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Market Share by Company'
+                        }
+                    }
+                }
+            });
+        }
+
+        fetchSituationData().then(data => renderPieChart(data));
+    </script>
+</body>
 </html>
