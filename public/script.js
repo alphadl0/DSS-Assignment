@@ -60,8 +60,8 @@ function fetchRevenueAndCosts() {
             {
               label: "Gelir (Milyon Euro)", // Revenue
               data: revenue,
-              borderColor: "rgba(75, 192, 192, 1)",
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgb(2, 106, 35)",
+              backgroundColor: "rgba(45, 45, 45, 0.2)",
               borderWidth: 2,
               fill: true,
               tension: 0.4, // Smooth curve
@@ -69,7 +69,7 @@ function fetchRevenueAndCosts() {
             {
               label: "Maliyetler (Milyon Euro)", // Costs
               data: costs,
-              borderColor: "rgba(255, 99, 132, 1)",
+              borderColor: "rgb(206, 55, 5)",
               backgroundColor: "rgba(255, 99, 132, 0.2)",
               borderWidth: 2,
               fill: true,
