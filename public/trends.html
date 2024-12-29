@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trends and Situation</title>
-    <link rel="stylesheet" href="trends.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -76,22 +75,54 @@
             color: #005ea8;
         }
 
+        .chart-container {
+            display: flex;
+            justify-content: space-between;
+            /* Makes the containers spread out */
+            gap: 20px;
+            /* Space between the two charts */
+            width: 100%;
+            /* Full width */
+            max-width: 900px;
+            /* Maximum width for both charts */
+            margin-top: 20px;
+            /* Add space between trends and charts */
+            padding: 1 20px;
+            /* Padding to align with other elements */
+        }
+
         .chart-box {
-            width: calc(100% - 40px);
-            /* Match the width of the trend containers */
-            max-width: 400px;
-            padding: 20px;
+            flex: 1;
+            min-width: 45%;
+            /* Minimum width for each chart container */
+            max-width: 98%;
+            /* Ensure the width does not go beyond the trend container */
             background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            /* Reduced padding to match trend container */
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 20px 0 0 0;
-            /* Align to the left and add top margin */
+            height: 350px;
+            /* Set a smaller height for the chart container */
+            display: flex;
+            flex-direction: column;
+            /* Ensure chart and text are stacked vertically */
+            justify-content: space-between;
+            /* Space out chart and text */
         }
 
         .chart-info {
-            margin-top: 20px;
-            font-size: 16px;
+            margin-top: 15px;
+            font-size: 20px;
             color: #333;
+            white-space: normal;
+            /* Allow text to wrap */
+            word-wrap: break-word;
+            /* Break words if they are too long */
+            word-break: break-word;
+            /* Ensures long words break properly */
+            overflow-wrap: break-word;
+            /* Allow text to break and wrap correctly */
         }
     </style>
 </head>
@@ -105,7 +136,7 @@
         <div class="trend-section">
             <h2>1. Global Automotive Market Trends</h2>
             <p><strong>Electric Vehicle (EV) Adoption:</strong> A substantial shift towards electric vehicles is
-                occurring in the global automotive market. 
+                occurring in the global automotive market.
                 Over 35% of new vehicle sales in China during 2023 were
                 electric, and this upward trend is projected to continue, impacting the industry worldwide.</p>
         </div>
@@ -124,13 +155,120 @@
                 demands.</p>
         </div>
     </div>
-    <div class="chart-box">
-        <canvas id="doughnutChart" width="400" height="400"></canvas>
-        <div class="chart-info">
-            <p>This chart represents the market share of different companies. Each segment shows the percentage of the
-                market held by a specific company.</p>
+    <div class="chart-container">
+        <div class="chart-box">
+            <canvas id="doughnutChart" width="600" height="400"></canvas>
+        </div>
+        <div class="chart-box">
+            <select id="nameDropdown" title="Select a Name" onchange="fetchAndRenderChart()">
+                <option value="">Select a model</option>
+            </select>
+            <canvas id="linearChart" width="700" height="350"></canvas>
+            <div class="chart-info">
+                <p>This chart represents the sales trends from 2019 to 2023 based on the selected model.</p>
+            </div>
         </div>
     </div>
+
+    <script>
+        let currentChart = null; // Variable to store the current chart instance
+
+        async function populateDropdown() {
+            const response = await fetch('/getNames');
+            const names = await response.json();
+            const dropdown = document.getElementById('nameDropdown');
+
+            names.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                dropdown.appendChild(option);
+            });
+        }
+
+        async function fetchAndRenderChart() {
+            const selectedName = document.getElementById('nameDropdown').value;
+            if (!selectedName) return;
+
+            const response = await fetch(`/getSalesData?name=${encodeURIComponent(selectedName)}`);
+            const salesData = await response.json();
+
+            // Initialize a year range (2019 to 2023)
+            const yearsRange = [2019, 2020, 2021, 2022, 2023];
+
+            // Prepare an object to store sales data by year
+            const salesByYear = {};
+            yearsRange.forEach(year => {
+                salesByYear[year] = 0; // Initialize with 0 for each year
+            });
+
+            // Fill the salesByYear object with the actual sales data
+            salesData.forEach(data => {
+                if (salesByYear.hasOwnProperty(data.year)) {
+                    salesByYear[data.year] = data.sales;
+                }
+            });
+
+            // Prepare the data for the chart
+            const years = yearsRange;
+            const sales = years.map(year => salesByYear[year]);
+
+            const ctx = document.getElementById('linearChart').getContext('2d');
+
+            // Destroy the previous chart instance if it exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Create a new chart instance
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years, // Ensure years are in the correct order
+                    datasets: [{
+                        label: `Sales Data for ${selectedName}`,
+                        data: sales,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                            },
+                            // Ensures years are displayed in the correct order
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Sales',
+                            },
+                            beginAtZero: true, // Ensures y-axis starts from 0
+                        },
+                    },
+                },
+            });
+        }
+
+        populateDropdown();
+    </script>
+
+
     <script>
         async function fetchSituationData() {
             const response = await fetch('/situationData');
