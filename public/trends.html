@@ -83,7 +83,7 @@
             /* Space between the two charts */
             width: 100%;
             /* Full width */
-            max-width: 900px;
+            max-width: 910px;
             /* Maximum width for both charts */
             margin-top: 20px;
             /* Add space between trends and charts */
@@ -163,11 +163,21 @@
             <select id="nameDropdown" title="Select a Name" onchange="fetchAndRenderChart()">
                 <option value="">Select a model</option>
             </select>
-            <canvas id="linearChart" width="700" height="350"></canvas>
+            <canvas id="linearChart" width="700" height="450"></canvas>
             <div class="chart-info">
                 <p>This chart represents the sales trends from 2019 to 2023 based on the selected model.</p>
             </div>
         </div>
+        <div class="chart-box">
+            <select id="nameDropdown1" title="Select a model" onchange="fetchAndRenderChart1()">
+                <option value="">Choose a model</option>
+            </select>
+            <canvas id="linearChart1" width="700" height="450"></canvas>
+            <div class="chart-info">
+                <p>This chart represents the sales trends from 2019 to 2023 based on the selected model.</p>
+            </div>
+        </div>
+        
     </div>
 
     <script>
@@ -228,8 +238,8 @@
                     datasets: [{
                         label: `Sales Data for ${selectedName}`,
                         data: sales,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(139, 0, 0, 1)',
+                        backgroundColor: 'rgba(139, 0, 0, 1)',
                         borderWidth: 2,
                     }],
                 },
@@ -342,6 +352,109 @@
 
         fetchSituationData().then(data => renderDoughnutChart(data));
     </script>
+
+<script>
+    let currentChart1 = null; // Variable to store the current chart instance
+
+    async function populateDropdown1() {
+        const response = await fetch('/getEvNameData');
+        const names = await response.json(); // This will be an array of names
+        const dropdown = document.getElementById('nameDropdown1');  // Corrected ID
+
+        // Clear existing options before adding new ones
+        dropdown.innerHTML = '';
+
+        names.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            dropdown.appendChild(option);
+        });
+    }
+
+    async function fetchAndRenderChart1() {
+        const selectedName1 = document.getElementById('nameDropdown1').value; // Corrected ID
+        if (!selectedName1) return;
+
+        const response = await fetch(`/getEvData?name=${encodeURIComponent(selectedName1)}`); // Corrected variable name
+        const evData = await response.json(); // Corrected variable name
+
+        // Initialize a year range (2019 to 2023)
+        const yearsRange = [2019, 2020, 2021, 2022, 2023];
+
+        // Prepare an object to store sales data by year
+        const salesByYear = {}; // Corrected variable name
+        yearsRange.forEach(year => {
+            salesByYear[year] = 0; // Initialize with 0 for each year
+        });
+
+        // Fill the salesByYear object with the actual sales data
+        evData.forEach(data => {  // Corrected variable name
+            if (salesByYear.hasOwnProperty(data.year)) {
+                salesByYear[data.year] = data.sales;
+            }
+        });
+
+        // Prepare the data for the chart
+        const years = yearsRange;
+        const sales = years.map(year => salesByYear[year]);
+
+        const ctx = document.getElementById('linearChart1').getContext('2d');
+
+        // Destroy the previous chart instance if it exists
+        if (currentChart1) {
+            currentChart1.destroy();
+        }
+
+        // Create a new chart instance
+        currentChart1 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years, // Ensure years are in the correct order
+                datasets: [{
+                    label: `Sales Data for ${selectedName1}`, // Corrected variable name
+                    data: sales,
+                    borderColor: 'rgba(0, 0, 139, 1)',
+                    backgroundColor: 'rgba(0, 0, 139, 1)',
+                    borderWidth: 2,
+                }],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Year',
+                        },
+                        // Ensures years are displayed in the correct order
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 0,
+                            minRotation: 0,
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Sales',
+                        },
+                        beginAtZero: true, // Ensures y-axis starts from 0
+                    },
+                },
+            },
+        });
+    }
+
+    populateDropdown1(); // Initialize the dropdown when the page loads
+</script>
+
+
 </body>
 
 </html>

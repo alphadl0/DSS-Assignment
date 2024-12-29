@@ -13,6 +13,8 @@ router.get("/getData/:type", controller.getData);
 router.get("/situationData", controller.getSituationData);
 router.get("/getNames", controller.getNames); // Fetch distinct names for dropdown
 router.get("/getSalesData", controller.getSalesData); // Fetch sales data for selected name
+router.get("/getEvData", controller.getEvData); // Fetch EV data for selected name
+router.get("/getEvNameData", controller.getEvNameData); // Fetch EV data for selected name")
 
 
 module.exports = router;

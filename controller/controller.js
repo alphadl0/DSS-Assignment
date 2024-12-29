@@ -73,6 +73,35 @@ const getSalesData = (req, res) => {
   });
 };
 
+const getEvNameData = (req, res) => {
+  const query = "SELECT DISTINCT name FROM ev";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Database query error" });
+    } else {
+      res.json(results.map(row => row.name));
+    }
+  });
+}
+
+const getEvData = (req, res) => {
+  const { name } = req.query;
+  if (!name) {
+    return res.status(400).json({ error: "Name parameter is required" });
+  }
+
+  const query = "SELECT name, year, sales FROM ev WHERE name = ?";
+  db.query(query, [name], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Database query error" });
+    } else {
+      res.json(results);
+    }
+  });
+}
+
 // Fetch data logic
 const getData = (req, res) => {
   const { type } = req.params;
@@ -126,4 +155,6 @@ module.exports = {
   getSituationData,
   getNames,
   getSalesData,
+  getEvData,
+  getEvNameData,
 };
