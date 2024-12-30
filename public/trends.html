@@ -7,6 +7,7 @@
     <title>Trends and Situation</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <style>
         body {
             height: 100vh;
@@ -43,7 +44,7 @@
             vertical-align: middle;
             margin-right: 5px;
         }
-        
+
         .go-to-situation-button {
             display: flex;
             align-items: center;
@@ -101,39 +102,34 @@
 
         .chart-container {
             display: flex;
-            justify-content: space-between;
-            /* Makes the containers spread out */
+            flex-wrap: wrap;
+            /* Allow items to wrap to the next line when space is filled */
             gap: 20px;
-            /* Space between the two charts */
+            /* Add space between each chart box */
+            justify-content: flex-start;
+            /* Align items from the start */
             width: 100%;
-            /* Full width */
-            max-width: 910px;
-            /* Maximum width for both charts */
             margin-top: 20px;
-            /* Add space between trends and charts */
             padding: 1 20px;
-            /* Padding to align with other elements */
         }
 
         .chart-box {
-            flex: 1;
-            min-width: 45%;
-            /* Minimum width for each chart container */
-            max-width: 98%;
-            /* Ensure the width does not go beyond the trend container */
+            flex: 1 1 45%;
+            /* Allow each box to take 45% of the container width */
+            min-width: 100px;
+            /* Prevent the box from getting too small */
+            max-width: 410px;
+            /* Prevent the box from becoming too large */
             background: rgba(255, 255, 255, 0.9);
             padding: 15px;
-            /* Reduced padding to match trend container */
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             height: 350px;
-            /* Set a smaller height for the chart container */
             display: flex;
             flex-direction: column;
-            /* Ensure chart and text are stacked vertically */
             justify-content: space-between;
-            /* Space out chart and text */
         }
+
 
         .chart-info {
             margin-top: 15px;
@@ -186,7 +182,7 @@
     </div>
     <div class="chart-container">
         <div class="chart-box">
-            <canvas id="doughnutChart" width="600" height="400"></canvas>
+            <canvas id="doughnutChart" width="700" height="450"></canvas>
         </div>
         <div class="chart-box">
             <select id="nameDropdown" title="Select a Name" onchange="fetchAndRenderChart()">
@@ -206,7 +202,28 @@
                 <p>This chart represents the sales trends from 2019 to 2023 based on the selected model.</p>
             </div>
         </div>
-        
+        <div class="chart-box">
+            <h3 style="text-align: center; color: #005ea8;">Top 5 Performing Models</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li><strong>Tiguan:</strong> 3,501,541</li>
+                <li><strong>Polo/Virtus/Nivus/Taigo:</strong> 2,666,007</li>
+                <li><strong>Passat/Magotan:</strong> 2,346,827</li>
+                <li><strong>Lavida:</strong> 1,973,722</li>
+                <li><strong>Golf:</strong> 1,964,735</li>
+            </ul>
+        </div>
+
+        <div class="chart-box">
+            <h3 style="text-align: center; color: #005ea8;">Bottom 5 Performing Models</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li><strong>Beetle:</strong> 20,580</li>
+                <li><strong>Phideon:</strong> 38,223</li>
+                <li><strong>Fox/Suran:</strong> 74,621</li>
+                <li><strong>Sharan/Viloran:</strong> 120,614</li>
+                <li><strong>Touareg:</strong> 194,783</li>
+            </ul>
+        </div>
+
     </div>
 
     <script>
@@ -308,180 +325,199 @@
     </script>
 
 
-    <script>
-        async function fetchSituationData() {
-            const response = await fetch('/situationData');
-            const data = await response.json();
-            return data;
-        }
-
-        function renderDoughnutChart(data) {
-            // Sort data in descending order based on market share
-            data.sort((a, b) => b.market_share - a.market_share);
-
-            const ctx = document.getElementById('doughnutChart').getContext('2d');
-            const labels = data.map(item => item.company_name);
-            const values = data.map(item => item.market_share);
-            const colors = [
-                'rgba(139, 0, 0, 0.8)',    // Dark Red
-                'rgba(0, 0, 139, 0.8)',    // Dark Blue
-                'rgba(184, 134, 11, 0.8)', // Dark Goldenrod
-                'rgba(0, 100, 0, 0.8)',    // Dark Green
-                'rgba(72, 61, 139, 0.8)',  // Dark Slate Blue
-                'rgba(139, 69, 19, 0.8)',  // Saddle Brown
-                'rgba(128, 0, 128, 0.8)',  // Purple
-                'rgba(0, 128, 128, 0.8)',  // Teal
-                'rgba(255, 69, 0, 0.8)'    // Orange Red
-            ];
-            const borderColors = [
-                'rgba(139, 0, 0, 1)',
-                'rgba(0, 0, 139, 1)',
-                'rgba(184, 134, 11, 1)',
-                'rgba(0, 100, 0, 1)',
-                'rgba(72, 61, 139, 1)',
-                'rgba(139, 69, 19, 1)',
-                'rgba(128, 0, 128, 1)',
-                'rgba(0, 128, 128, 1)',
-                'rgba(255, 69, 0, 1)'
-            ];
-
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels.map((label, index) => `${index + 1}. ${label}`),
-                    datasets: [{
-                        data: values,
-                        backgroundColor: colors.slice(0, data.length),
-                        borderColor: borderColors.slice(0, data.length),
-                        borderWidth: 2,
-                        hoverOffset: 25 // Add separation effect on hover/touch
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'left', // Position legend on the left
-                            align: 'start', // Align legend items vertically
-                        },
-                        title: {
-                            display: true,
-                            text: 'Market Share by Company',
-                            position: 'top',
-                            align: 'end', // Align title to the right
-                            padding: {
-                                top: 10,
-                                bottom: 30
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        fetchSituationData().then(data => renderDoughnutChart(data));
-    </script>
-
 <script>
-    let currentChart1 = null; // Variable to store the current chart instance
-
-    async function populateDropdown1() {
-        const response = await fetch('/getEvNameData');
-        const names = await response.json(); // This will be an array of names
-        const dropdown = document.getElementById('nameDropdown1');  // Corrected ID
-
-        // Clear existing options before adding new ones
-        dropdown.innerHTML = '';
-
-        names.forEach(name => {
-            const option = document.createElement('option');
-            option.value = name;
-            option.textContent = name;
-            dropdown.appendChild(option);
-        });
+    async function fetchSituationData() {
+        const response = await fetch('/situationData');
+        const data = await response.json();
+        return data;
     }
 
-    async function fetchAndRenderChart1() {
-        const selectedName1 = document.getElementById('nameDropdown1').value; // Corrected ID
-        if (!selectedName1) return;
+    function renderDoughnutChart(data) {
+        // Sort data in descending order based on market share
+        data.sort((a, b) => b.market_share - a.market_share);
 
-        const response = await fetch(`/getEvData?name=${encodeURIComponent(selectedName1)}`); // Corrected variable name
-        const evData = await response.json(); // Corrected variable name
+        const ctx = document.getElementById('doughnutChart').getContext('2d');
+        const labels = data.map(item => item.company_name);
+        const values = data.map(item => item.market_share);
+        const colors = [
+            'rgba(139, 0, 0, 0.8)',    // Dark Red
+            'rgba(0, 0, 139, 0.8)',    // Dark Blue
+            'rgba(184, 134, 11, 0.8)', // Dark Goldenrod
+            'rgba(0, 100, 0, 0.8)',    // Dark Green
+            'rgba(72, 61, 139, 0.8)',  // Dark Slate Blue
+            'rgba(139, 69, 19, 0.8)',  // Saddle Brown
+            'rgba(128, 0, 128, 0.8)',  // Purple
+            'rgba(0, 128, 128, 0.8)',  // Teal
+            'rgba(255, 69, 0, 0.8)'    // Orange Red
+        ];
+        const borderColors = [
+            'rgba(139, 0, 0, 1)',
+            'rgba(0, 0, 139, 1)',
+            'rgba(184, 134, 11, 1)',
+            'rgba(0, 100, 0, 1)',
+            'rgba(72, 61, 139, 1)',
+            'rgba(139, 69, 19, 1)',
+            'rgba(128, 0, 128, 1)',
+            'rgba(0, 128, 128, 1)',
+            'rgba(255, 69, 0, 1)'
+        ];
 
-        // Initialize a year range (2019 to 2023)
-        const yearsRange = [2019, 2020, 2021, 2022, 2023];
-
-        // Prepare an object to store sales data by year
-        const salesByYear = {}; // Corrected variable name
-        yearsRange.forEach(year => {
-            salesByYear[year] = 0; // Initialize with 0 for each year
-        });
-
-        // Fill the salesByYear object with the actual sales data
-        evData.forEach(data => {  // Corrected variable name
-            if (salesByYear.hasOwnProperty(data.year)) {
-                salesByYear[data.year] = data.sales;
-            }
-        });
-
-        // Prepare the data for the chart
-        const years = yearsRange;
-        const sales = years.map(year => salesByYear[year]);
-
-        const ctx = document.getElementById('linearChart1').getContext('2d');
-
-        // Destroy the previous chart instance if it exists
-        if (currentChart1) {
-            currentChart1.destroy();
-        }
-
-        // Create a new chart instance
-        currentChart1 = new Chart(ctx, {
-            type: 'line',
+        new Chart(ctx, {
+            type: 'doughnut',
             data: {
-                labels: years, // Ensure years are in the correct order
+                labels: labels.map((label, index) => `${index + 1}. ${label}`),
                 datasets: [{
-                    label: `Sales Data for ${selectedName1}`, // Corrected variable name
-                    data: sales,
-                    borderColor: 'rgba(0, 0, 139, 1)',
-                    backgroundColor: 'rgba(0, 0, 139, 1)',
-                    borderWidth: 2,
-                }],
+                    data: values,
+                    backgroundColor: colors.slice(0, data.length),
+                    borderColor: borderColors.slice(0, data.length),
+                    borderWidth: 1.5,
+                    hoverOffset: 20, // Add separation effect on hover/touch
+                    spacing : 5
+                }]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'top',
+                        position: 'left', // Position legend on the left
+                        align: 'start', // Align legend items vertically
                     },
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Year',
-                        },
-                        // Ensures years are displayed in the correct order
-                        ticks: {
-                            autoSkip: false,
-                            maxRotation: 0,
-                            minRotation: 0,
+                    title: {
+                        display: true,
+                        text: 'Market Share by Company',
+                        position: 'top',
+                        align: 'end', // Align title to the right
+                        padding: {
+                            top: 10,
+                            bottom: 30
                         }
                     },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Sales',
-                        },
-                        beginAtZero: true, // Ensures y-axis starts from 0
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label.split('. ')[1];
+                                return `${label}: ${context.raw}%`;
+                            }
+                        }
                     },
-                },
+                    datalabels: {
+                        color: '#fff',
+                        anchor: 'center',
+                        align: 'center',
+                        offset: 0,
+                        formatter: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
             },
+            plugins: [ChartDataLabels]
         });
     }
 
-    populateDropdown1(); // Initialize the dropdown when the page loads
+    fetchSituationData().then(data => renderDoughnutChart(data));
 </script>
+
+    <script>
+        let currentChart1 = null; // Variable to store the current chart instance
+
+        async function populateDropdown1() {
+            const response = await fetch('/getEvNameData');
+            const names = await response.json(); // This will be an array of names
+            const dropdown = document.getElementById('nameDropdown1');  // Corrected ID
+
+            // Clear existing options before adding new ones
+            dropdown.innerHTML = '';
+
+            names.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                dropdown.appendChild(option);
+            });
+        }
+
+        async function fetchAndRenderChart1() {
+            const selectedName1 = document.getElementById('nameDropdown1').value; // Corrected ID
+            if (!selectedName1) return;
+
+            const response = await fetch(`/getEvData?name=${encodeURIComponent(selectedName1)}`); // Corrected variable name
+            const evData = await response.json(); // Corrected variable name
+
+            // Initialize a year range (2019 to 2023)
+            const yearsRange = [2019, 2020, 2021, 2022, 2023];
+
+            // Prepare an object to store sales data by year
+            const salesByYear = {}; // Corrected variable name
+            yearsRange.forEach(year => {
+                salesByYear[year] = 0; // Initialize with 0 for each year
+            });
+
+            // Fill the salesByYear object with the actual sales data
+            evData.forEach(data => {  // Corrected variable name
+                if (salesByYear.hasOwnProperty(data.year)) {
+                    salesByYear[data.year] = data.sales;
+                }
+            });
+
+            // Prepare the data for the chart
+            const years = yearsRange;
+            const sales = years.map(year => salesByYear[year]);
+
+            const ctx = document.getElementById('linearChart1').getContext('2d');
+
+            // Destroy the previous chart instance if it exists
+            if (currentChart1) {
+                currentChart1.destroy();
+            }
+
+            // Create a new chart instance
+            currentChart1 = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years, // Ensure years are in the correct order
+                    datasets: [{
+                        label: `Sales Data for ${selectedName1}`, // Corrected variable name
+                        data: sales,
+                        borderColor: 'rgba(0, 0, 139, 1)',
+                        backgroundColor: 'rgba(0, 0, 139, 1)',
+                        borderWidth: 2,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                            },
+                            // Ensures years are displayed in the correct order
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Sales',
+                            },
+                            beginAtZero: true, // Ensures y-axis starts from 0
+                        },
+                    },
+                },
+            });
+        }
+
+        populateDropdown1(); // Initialize the dropdown when the page loads
+    </script>
 
 
 </body>

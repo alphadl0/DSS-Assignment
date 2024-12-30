@@ -102,6 +102,18 @@ const getEvData = (req, res) => {
   });
 }
 
+const getFactories = (req, res) => {
+  const query = "SELECT factory_name, annual_production, cost FROM factories WHERE annual_production IS NOT NULL";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Database query error" });
+    } else {
+      res.json(results);
+    }
+  });
+};
+
 // Fetch data logic
 const getData = (req, res) => {
   const { type } = req.params;
@@ -157,4 +169,5 @@ module.exports = {
   getSalesData,
   getEvData,
   getEvNameData,
+  getFactories,
 };

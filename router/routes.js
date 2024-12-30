@@ -15,6 +15,7 @@ router.get("/getNames", controller.getNames); // Fetch distinct names for dropdo
 router.get("/getSalesData", controller.getSalesData); // Fetch sales data for selected name
 router.get("/getEvData", controller.getEvData); // Fetch EV data for selected name
 router.get("/getEvNameData", controller.getEvNameData); // Fetch EV data for selected name")
+router.get("/getFactories", controller.getFactories); // Fetch factory data for selected name
 
 
 module.exports = router;

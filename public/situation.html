@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +21,8 @@
         }
 
         .chart-box {
-            width: 30%; /* Make the chart box smaller */
+            width: 25%; /* Reduced from 30% */
+            height: 160px; /* Reduced height */
             padding: 20px;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
@@ -45,38 +47,152 @@
             text-decoration: none;
             font-weight: bold;
             font-size: 18px;
-            /* Increase font size */
             margin-bottom: 20px;
-            /* Add margin to separate the button from the chart box */
         }
 
         .back-button:hover {
             background: #003f74;
         }
 
-        .map-container {
-            background: #ccc; /* Grey background color */
-            padding: 20px;
+        .trend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 100%;
+            margin-left: 0 auto;
+            height: 60vh; /* Reduced height */
+        }
+
+        .trend-section {
+            flex: 1;
+            min-width: 250px; /* Reduced minimum width */
+            max-width: 350px; /* Reduced maximum width */
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px; /* Reduced padding */
             border-radius: 10px;
-            width: 33%;
-            align-self: flex-start; /* Align to the left */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .trend-section h2 {
+            color: #005ea8;
         }
 
         #map {
-            height: 530px;
+            height: 350px; /* Reduced height */
             width: 100%;
+        }
+
+        #factory-dropdown {
+            width: 100%;
+            padding: 8px; /* Reduced padding */
+            border: 1px solid #aaa;
+            border-radius: 100px;
+            font-size: 14px; /* Reduced font size */
         }
     </style>
 </head>
+
 <body>
     <a href="trends.html" class="back-button">
         <span class="material-icons">arrow_back</span>
         <span>Back to Trends</span>
     </a>
-    <div class="map-container">
-        <h2>Volkswagen Locations in Germany</h2>
-        <div id="map" class="map-content"></div>
+    <div class="trend-container">
+        <div class="trend-section">
+            <h2>Volkswagen Locations in Germany</h2>
+            <div id="map" class="map-content"></div>
+        </div>
+        <div class="trend-section">
+            <h2>Factory Details</h2>
+            <select id="factory-dropdown" title="Select a factory">
+                <option value="" disabled selected>Select a factory</option>
+                <!-- Options will be populated here -->
+            </select>
+            <canvas id="factoryChart"></canvas>
+        </div>
     </div>
     <script src="map.js"></script>
+    <script>
+        fetch('/getFactories')
+            .then(response => response.json())
+            .then(data => {
+                const dropdown = document.getElementById('factory-dropdown');
+                const ctx = document.getElementById('factoryChart').getContext('2d');
+                let factoryChart;
+
+                data.forEach(factory => {
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(factory);
+                    option.text = factory.factory_name;
+                    dropdown.add(option);
+                });
+
+                dropdown.addEventListener('change', () => {
+                    const selectedFactory = JSON.parse(dropdown.value);
+                    const chartData = {
+                        labels: ['Annual Production', 'Cost'],
+                        datasets: [
+                            {
+                                label: 'Annual Production',
+                                data: [selectedFactory.annual_production, 0],
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                yAxisID: 'y1'
+                            },
+                            {
+                                label: 'Cost',
+                                data: [0, selectedFactory.cost],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1,
+                                yAxisID: 'y2'
+                            }
+                        ]
+                    };
+
+                    if (factoryChart) {
+                        factoryChart.destroy();
+                    }
+
+                    factoryChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: chartData,
+                        options: {
+                            scales: {
+                                y1: {
+                                    type: 'linear',
+                                    position: 'left',
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Annual Production'
+                                    }
+                                },
+                                y2: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Cost'
+                                    },
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            })
+            .catch(error => console.error('Error fetching factory data:', error));
+    </script>
 </body>
+
 </html>
