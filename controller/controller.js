@@ -103,8 +103,17 @@ const getEvData = (req, res) => {
 }
 
 const getFactories = (req, res) => {
-  const query = "SELECT factory_name, annual_production, cost FROM factories WHERE annual_production IS NOT NULL";
-  db.query(query, (err, results) => {
+  const { name } = req.query;
+
+  let query = "SELECT factory_name, year, annual_cost FROM factory";
+  const params = [];
+
+  if (name) {
+    query += " WHERE factory_name = ?";
+    params.push(name);
+  }
+
+  db.query(query, params, (err, results) => {
     if (err) {
       console.error(err.message);
       res.status(500).json({ error: "Database query error" });

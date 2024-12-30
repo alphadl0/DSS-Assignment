@@ -21,8 +21,10 @@
         }
 
         .chart-box {
-            width: 25%; /* Reduced from 30% */
-            height: 160px; /* Reduced height */
+            width: 25%;
+            /* Reduced from 30% */
+            height: 160px;
+            /* Reduced height */
             padding: 20px;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
@@ -62,15 +64,19 @@
             align-items: stretch;
             max-width: 100%;
             margin-left: 0 auto;
-            height: 60vh; /* Reduced height */
+            height: 60vh;
+            /* Reduced height */
         }
 
         .trend-section {
             flex: 1;
-            min-width: 250px; /* Reduced minimum width */
-            max-width: 350px; /* Reduced maximum width */
+            min-width: 250px;
+            /* Reduced minimum width */
+            max-width: 350px;
+            /* Reduced maximum width */
             background: rgba(255, 255, 255, 0.9);
-            padding: 15px; /* Reduced padding */
+            padding: 15px;
+            /* Reduced padding */
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
@@ -83,16 +89,19 @@
         }
 
         #map {
-            height: 350px; /* Reduced height */
+            height: 350px;
+            /* Reduced height */
             width: 100%;
         }
 
         #factory-dropdown {
             width: 100%;
-            padding: 8px; /* Reduced padding */
+            padding: 8px;
+            /* Reduced padding */
             border: 1px solid #aaa;
             border-radius: 100px;
-            font-size: 14px; /* Reduced font size */
+            font-size: 14px;
+            /* Reduced font size */
         }
     </style>
 </head>
@@ -108,14 +117,213 @@
             <div id="map" class="map-content"></div>
         </div>
         <div class="trend-section">
-            <h2>Factory Details</h2>
-            <select id="factory-dropdown" title="Select a factory">
-                <option value="" disabled selected>Select a factory</option>
-                <!-- Options will be populated here -->
+            <label for="factoryDropdown">Select Factory:</label>
+            <select id="factoryDropdown">
+                <option value="">--Select a Factory--</option>
             </select>
-            <canvas id="factoryChart"></canvas>
+
+            <h3>Annual Costs</h3>
+            <canvas id="annualCostChart"></canvas>
+        </div>
+        <div class="trend-section">
+            <label for="productionDropdown">Select Factory for Production:</label>
+            <select id="productionDropdown">
+                <option value="">--Select a Factory--</option>
+            </select>
+
+            <h3>Annual Production</h3>
+            <canvas id="annualProductionChart"></canvas>
         </div>
     </div>
+
+    <script>
+async function fetchProductionData(factoryName) {
+  try {
+    const response = await fetch(`/getProduction?name=${encodeURIComponent(factoryName)}`);
+    const data = await response.json();
+
+    const years = data.map((row) => row.year);
+    const productions = data.map((row) => row.annual_production);
+
+    // Update the chart with fetched data
+    if (annualProductionChart) {
+      annualProductionChart.destroy();
+    }
+
+    const ctx = document.getElementById("annualProductionChart").getContext("2d");
+    annualProductionChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: "Annual Production",
+            data: productions,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true },
+        },
+        scales: {
+          x: { title: { display: true, text: "Year" } },
+          y: { title: { display: true, text: "Annual Production" }, beginAtZero: true },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching production data:", error);
+  }
+}
+      </script>
+      
+
+    <script>
+        // Fetch factory names and populate the dropdown
+        // Initialize the chart instance
+        let annualCostChart;
+
+        // Function to populate the factory dropdown
+        async function populateFactoryDropdown() {
+            try {
+                const response = await fetch("/getFactories");
+                const factories = await response.json();
+
+                const dropdown = document.getElementById("factoryDropdown");
+
+                // Use a Set to store unique factory names
+                const uniqueFactories = new Set();
+
+                factories.forEach((factory) => {
+                    uniqueFactories.add(factory.factory_name);
+                });
+
+                // Populate dropdown with unique factory names
+                uniqueFactories.forEach((factoryName) => {
+                    const option = document.createElement("option");
+                    option.value = factoryName;
+                    option.textContent = factoryName;
+                    dropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error fetching factories:", error);
+            }
+        }
+
+        // Function to fetch factory data and update the chart
+        // Function to fetch factory data and update the chart
+        async function fetchFactoryData(factoryName) {
+            try {
+                const response = await fetch(`/getFactories?name=${encodeURIComponent(factoryName)}`);
+                const data = await response.json();
+
+                // Extract years and annual_costs for the chart
+                const years = data.map((row) => row.year);
+                const annualCosts = data.map((row) => row.annual_cost);
+
+                // Define red line values for each factory
+                const redLineValues = {
+                    Wolfsburg: 1750000000,
+                    Hanover: 400000000,
+                    Emden: 500000000,
+                    Zwickau: 600000000,
+                    Dresden: 125000000,
+                };
+
+                // Get the baseline value for the selected factory
+                const redLineValue = redLineValues[factoryName] || null;
+
+                // Remove the existing chart and recreate it to ensure the red line updates
+                if (annualCostChart) {
+                    annualCostChart.destroy();
+                }
+
+                const ctx = document.getElementById("annualCostChart").getContext("2d");
+                annualCostChart = new Chart(ctx, {
+                    type: "line", // Change to 'line' chart
+                    data: {
+                        labels: years,
+                        datasets: [
+                            {
+                                label: "Annual Cost",
+                                data: annualCosts,
+                                borderColor: "#4CAF50",
+                                backgroundColor: "rgba(76, 175, 80, 0.2)",
+                                borderWidth: 2,
+                                pointBackgroundColor: "#4CAF50",
+                                pointBorderColor: "#fff",
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                        },
+                        scales: {
+                            x: { title: { display: true, text: "Year" } },
+                            y: {
+                                title: { display: true, text: "Annual Cost" },
+                                beginAtZero: true,
+                            },
+                        },
+                    },
+                    plugins: [
+                        {
+                            id: "redBaseline",
+                            afterDraw: (chart) => {
+                                if (redLineValue !== null) {
+                                    const yScale = chart.scales.y;
+                                    const ctx = chart.ctx;
+                                    const yValue = yScale.getPixelForValue(redLineValue);
+
+                                    // Draw the red line
+                                    ctx.save();
+                                    ctx.beginPath();
+                                    ctx.moveTo(chart.scales.x.left, yValue);
+                                    ctx.lineTo(chart.scales.x.right, yValue);
+                                    ctx.strokeStyle = "red";
+                                    ctx.lineWidth = 2;
+                                    ctx.stroke();
+
+                                    // Draw the label for the red line, positioned slightly to the left of the line
+                                    ctx.font = "14px Arial";
+                                    ctx.fillStyle = "red";
+                                    ctx.fillText(`Hedef Maliyet: ${redLineValue}`, chart.scales.x.left + 10, yValue + 20); // Adjusted X position
+                                    ctx.restore();
+                                }
+                            },
+                        },
+                    ],
+                });
+            } catch (error) {
+                console.error("Error fetching factory data:", error);
+            }
+        }
+
+
+        // Event listener for dropdown change
+        document.getElementById("factoryDropdown").addEventListener("change", (event) => {
+            const factoryName = event.target.value;
+            if (factoryName) {
+                fetchFactoryData(factoryName);
+            } else {
+                if (annualCostChart) {
+                    annualCostChart.destroy(); // Clear the chart
+                    annualCostChart = null;
+                }
+            }
+        });
+
+        // Initialize the dropdown on page load
+        document.addEventListener("DOMContentLoaded", populateFactoryDropdown);
+
+    </script>
     <script src="map.js"></script>
     <script>
         fetch('/getFactories')
