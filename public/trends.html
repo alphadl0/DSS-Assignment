@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trends and Situation</title>
+    <title>Trendleri</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -150,34 +150,25 @@
 <body>
     <a href="dashboard.html" class="back-button">
         <span class="material-icons">arrow_back</span>
-        <span>Back to Dashboard</span>
+        <span>Dashboard</span>
     </a>
     <a href="situation.html" class="go-to-situation-button">
-        Go to Situation
+        Durum
         <span class="material-icons">arrow_forward</span>
     </a>
 
     <div class="trend-container">
         <div class="trend-section">
-            <h2>1. Global Automotive Market Trends</h2>
-            <p><strong>Electric Vehicle (EV) Adoption:</strong> A substantial shift towards electric vehicles is
-                occurring in the global automotive market.
-                Over 35% of new vehicle sales in China during 2023 were
-                electric, and this upward trend is projected to continue, impacting the industry worldwide.</p>
+            <h2 style="font-size: 24px;">1. Küresel Otomotiv Pazarı Trendleri</h2>
+            <p style="font-size: 24px;"><strong>Elektrikli Araçların (EV) Benimsenmesi:</strong> Küresel otomotiv pazarında elektrikli araçlara doğru önemli bir kayma yaşanıyor.</p>
         </div>
         <div class="trend-section">
-            <h2>2. Competitive Landscape</h2>
-            <p><strong>Japanese Automaker Consolidation:</strong> Honda and Nissan are in discussions about a potential
-                merger to address competitive pressures from Tesla and Chinese automakers. Such a merger would position
-                them as the world's third-largest auto group by vehicle sales, potentially intensifying competition for
-                Volkswagen.</p>
+            <h2 style="font-size: 24px;">2. Rekabet Ortamı</h2>
+            <p style="font-size: 24px;"><strong>Japon Üreticiler Birleşmesi:</strong> Honda ve Nissan, birleşerek dünyanın en büyük üçüncü otomobil grubu olmayı hedefliyor.</p>
         </div>
         <div class="trend-section">
-            <h2>3. Market Challenges and Opportunities</h2>
-            <p><strong>Consumer Preferences:</strong> There is a growing consumer shift towards compact cars and
-                electric vehicles, driven by affordability concerns and environmental considerations. This trend
-                presents opportunities for manufacturers to diversify their product lines to meet evolving consumer
-                demands.</p>
+            <h2 style="font-size: 24px;">3. Pazar Zorlukları ve Fırsatlar</h2>
+            <p style="font-size: 24px;"><strong>Tüketici Tercihleri:</strong> Kompakt otomobillere doğru artan bir tüketici kayması var ve elektrikli araçlar, satın alınabilirlik kaygıları ve çevresel kaygılar tarafından yönlendirilmektedir.</p>
         </div>
     </div>
     <div class="chart-container">
@@ -186,41 +177,41 @@
         </div>
         <div class="chart-box">
             <select id="nameDropdown" title="Select a Name" onchange="fetchAndRenderChart()">
-                <option value="">Select a model</option>
+                <option value="">--Bir model seçiniz--</option>
             </select>
             <canvas id="linearChart" width="700" height="450"></canvas>
             <div class="chart-info">
-                <p>This chart represents the sales trends from 2019 to 2023 based on the selected model.</p>
+                <p>Elektrikli olmayan otomobillerin satış eğilimlerini göstermektedir.</p>
             </div>
         </div>
         <div class="chart-box">
             <select id="nameDropdown1" title="Select a model" onchange="fetchAndRenderChart1()">
-                <option value="">Choose a model</option>
+                <option value="">--Bir model seçiniz--</option>
             </select>
             <canvas id="linearChart1" width="700" height="450"></canvas>
             <div class="chart-info">
-                <p>This chart represents the sales trends from 2019 to 2023 based on the selected model.</p>
+                <p>Elektrikli olan otomobillerin satış eğilimlerini göstermektedir.</p>
             </div>
         </div>
         <div class="chart-box">
-            <h3 style="text-align: center; color: #005ea8;">Top 5 Performing Models</h3>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li><strong>Tiguan:</strong> 3,501,541</li>
-                <li><strong>Polo/Virtus/Nivus/Taigo:</strong> 2,666,007</li>
-                <li><strong>Passat/Magotan:</strong> 2,346,827</li>
-                <li><strong>Lavida:</strong> 1,973,722</li>
-                <li><strong>Golf:</strong> 1,964,735</li>
+            <h3 style="text-align: center; color: #005ea8; margin-bottom: 20px; font-size: 22px;">En iyi 5 Performans gösteren elektrikli olmayan Modeller</h3>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 20px; line-height: 1.8;">
+                <li style="margin-bottom: 12px;"><strong>Tiguan:</strong> 3,501,541</li>
+                <li style="margin-bottom: 12px;"><strong>Polo/Virtus/Nivus/Taigo:</strong> 2,666,007</li>
+                <li style="margin-bottom: 12px;"><strong>Passat/Magotan:</strong> 2,346,827</li>
+                <li style="margin-bottom: 12px;"><strong>Lavida:</strong> 1,973,722</li>
+                <li style="margin-bottom: 12px;"><strong>Golf:</strong> 1,964,735</li>
             </ul>
         </div>
 
         <div class="chart-box">
-            <h3 style="text-align: center; color: #005ea8;">Bottom 5 Performing Models</h3>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li><strong>Beetle:</strong> 20,580</li>
-                <li><strong>Phideon:</strong> 38,223</li>
-                <li><strong>Fox/Suran:</strong> 74,621</li>
-                <li><strong>Sharan/Viloran:</strong> 120,614</li>
-                <li><strong>Touareg:</strong> 194,783</li>
+            <h3 style="text-align: center; color: #005ea8; margin-bottom: 20px; font-size: 22px;">Alt 5 Elektrikli Olmayan Modellerin Performansı</h3>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 20px; line-height: 1.8;">
+                <li style="margin-bottom: 12px;"><strong>Beetle:</strong> 20,580</li>
+                <li style="margin-bottom: 12px;"><strong>Phideon:</strong> 38,223</li>
+                <li style="margin-bottom: 12px;"><strong>Fox/Suran:</strong> 74,621</li>
+                <li style="margin-bottom: 12px;"><strong>Sharan/Viloran:</strong> 120,614</li>
+                <li style="margin-bottom: 12px;"><strong>Touareg:</strong> 194,783</li>
             </ul>
         </div>
 
@@ -384,7 +375,7 @@
                     },
                     title: {
                         display: true,
-                        text: 'Market Share by Company',
+                        text: 'Şirketlere Göre Pazar Payı',
                         position: 'top',
                         align: 'end', // Align title to the right
                         padding: {
@@ -422,20 +413,30 @@
         let currentChart1 = null; // Variable to store the current chart instance
 
         async function populateDropdown1() {
-            const response = await fetch('/getEvNameData');
-            const names = await response.json(); // This will be an array of names
-            const dropdown = document.getElementById('nameDropdown1');  // Corrected ID
+    const response = await fetch('/getEvNameData');
+    const names = await response.json(); // This will be an array of names
+    const dropdown = document.getElementById('nameDropdown1'); // Corrected ID
 
-            // Clear existing options before adding new ones
-            dropdown.innerHTML = '';
+    // Clear existing options before adding new ones
+    dropdown.innerHTML = '';
 
-            names.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                dropdown.appendChild(option);
-            });
-        }
+    // Add the default "Bir model seçiniz" option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Bir model seçiniz';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    dropdown.appendChild(defaultOption);
+
+    // Add other options
+    names.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        dropdown.appendChild(option);
+    });
+}
+
 
         async function fetchAndRenderChart1() {
             const selectedName1 = document.getElementById('nameDropdown1').value; // Corrected ID

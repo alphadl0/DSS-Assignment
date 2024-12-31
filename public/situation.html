@@ -109,32 +109,94 @@
 <body>
     <a href="trends.html" class="back-button">
         <span class="material-icons">arrow_back</span>
-        <span>Back to Trends</span>
+        <span>Trendleri</span>
     </a>
     <div class="trend-container">
         <div class="trend-section">
-            <h2>Volkswagen Locations in Germany</h2>
+            <h2>Almanya'daki Volkswagen üretim tesisleri</h2>
             <div id="map" class="map-content"></div>
         </div>
         <div class="trend-section">
-            <label for="factoryDropdown">Select Factory:</label>
+            <label for="factoryDropdown">Yıllık Maliyetler:</label>
             <select id="factoryDropdown">
-                <option value="">--Select a Factory--</option>
+                <option value="">--Fabrika Seçiniz--</option>
             </select>
 
-            <h3>Annual Costs</h3>
+            <h3>Yıllık Maliyetler</h3>
             <canvas id="annualCostChart"></canvas>
         </div>
         <div class="trend-section">
-            <label for="productionDropdown">Select Factory for Production:</label>
+            <label for="productionDropdown">Yıllık Üretim:</label>
             <select id="productionDropdown">
-                <option value="">--Select a Factory--</option>
+                <option value="">--Fabrika Seçiniz--</option>
             </select>
 
-            <h3>Annual Production</h3>
+            <h3>Yıllık Üretim</h3>
             <canvas id="annualProductionChart"></canvas>
         </div>
+        <div class="trend-section">
+            <h2>Tahminler</h2>
+            <label for="factory-select">Fabrika Seçiniz:</label>
+            <select id="factory-select">
+                <option value="Wolfsburg">Wolfsburg</option>
+                <option value="Zwickau">Zwickau</option>
+                <option value="Emden">Emden</option>
+                <option value="Hanover">Hanover</option>
+                <option value="Dresden">Dresden</option>
+            </select>
+            <button onclick="showFactoryDetails()">Tahmin</button>
+            <button onclick="window.location.href='recomendation.html'">Get Recommendation</button>
+            <div id="factory-details"></div>
+        </div>
     </div>
+    <script>
+        const factoryData = {
+    "Wolfsburg": {
+        "predicted_cost_2024": 2100000000,
+        "predicted_cost_2025": 2150000000,
+        "predicted_production_2024": 944000,
+        "predicted_production_2025": 948000
+    },
+    "Zwickau": {
+        "predicted_cost_2024": 760000000,
+        "predicted_cost_2025": 780000000,
+        "predicted_production_2024": 338000,
+        "predicted_production_2025": 345000
+    },
+    "Emden": {
+        "predicted_cost_2024": 660000000,
+        "predicted_cost_2025": 680000000,
+        "predicted_production_2024": 207000,
+        "predicted_production_2025": 210000
+    },
+    "Hanover": {
+        "predicted_cost_2024": 560000000,
+        "predicted_cost_2025": 580000000,
+        "predicted_production_2024": 183000,
+        "predicted_production_2025": 185000
+    },
+    "Dresden": {
+        "predicted_cost_2024": 165000000,
+        "predicted_cost_2025": 170000000,
+        "predicted_production_2024": 37600,
+        "predicted_production_2025": 39000
+    }
+};
+
+    
+        function showFactoryDetails() {
+            const selectedFactory = document.getElementById('factory-select').value;
+            const details = factoryData[selectedFactory];
+            const detailsDiv = document.getElementById('factory-details');
+            detailsDiv.innerHTML = `
+                <p><strong>Fabrika:</strong> ${selectedFactory}</p>
+                <p><strong>2024 Tahmini Maliyet:</strong> ${details.predicted_cost_2024}</p>
+                <p><strong>2025 Tahmini Maliyet:</strong> ${details.predicted_cost_2025}</p>
+                <p><strong>2024 Tahmini Üretim:</strong> ${details.predicted_production_2024}</p>
+                <p><strong>2025 Tahmini Üretim:</strong> ${details.predicted_production_2025}</p>
+            `;
+        }
+    </script>
 
     <script>
         let annualProductionChart; // Declare the chart variable globally
@@ -161,7 +223,7 @@
                         labels: years,
                         datasets: [
                             {
-                                label: "Annual Production",
+                                label: "Yıllık Üretim",
                                 data: productions,
                                 backgroundColor: "rgba(0, 51, 102, 1)",
                                 borderColor: "rgba(75, 192, 192, 1)",
@@ -175,8 +237,8 @@
                             legend: { display: true },
                         },
                         scales: {
-                            x: { title: { display: true, text: "Year" } },
-                            y: { title: { display: true, text: "Annual Production" }, beginAtZero: true },
+                            x: { title: { display: true, text: "Yıl" } },
+                            y: { title: { display: true, text: "Yıllık Üretim" }, beginAtZero: true },
                         },
                     },
                 });
@@ -272,7 +334,7 @@
                         labels: years,
                         datasets: [
                             {
-                                label: "Annual Cost",
+                                label: "Yıllık Maliyet",
                                 data: annualCosts,
                                 borderColor: "rgba(0, 51, 102, 1)",
                                 backgroundColor: "rgba(0, 51, 102, 0.7)",
@@ -288,9 +350,9 @@
                             legend: { display: true },
                         },
                         scales: {
-                            x: { title: { display: true, text: "Year" } },
+                            x: { title: { display: true, text: "Yıl" } },
                             y: {
-                                title: { display: true, text: "Annual Cost" },
+                                title: { display: true, text: "Yıllık Maliyet" },
                                 beginAtZero: true,
                             },
                         },
