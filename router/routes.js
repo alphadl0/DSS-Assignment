@@ -16,6 +16,6 @@ router.get("/getSalesData", controller.getSalesData); // Fetch sales data for se
 router.get("/getEvData", controller.getEvData); // Fetch EV data for selected name
 router.get("/getEvNameData", controller.getEvNameData); // Fetch EV data for selected name")
 router.get("/getFactories", controller.getFactories); // Fetch factory data for selected name
-
+router.get("/getProd", controller.getProd); // Fetch production data for selected name
 
 module.exports = router;

@@ -123,6 +123,27 @@ const getFactories = (req, res) => {
   });
 };
 
+const getProd = (req, res) => {
+  const { name} = req.query;
+
+  let query = "SELECT factory_name, year, annual_production FROM factory";
+  const params = [];
+
+  if (name) {
+    query += " WHERE factory_name = ?";
+    params.push(name);
+  }
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Database query error" });
+    } else {
+      res.json(results);
+    }
+  });
+};
+
 // Fetch data logic
 const getData = (req, res) => {
   const { type } = req.params;
@@ -179,4 +200,5 @@ module.exports = {
   getEvData,
   getEvNameData,
   getFactories,
+  getProd,
 };

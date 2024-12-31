@@ -137,51 +137,74 @@
     </div>
 
     <script>
-async function fetchProductionData(factoryName) {
-  try {
-    const response = await fetch(`/getProduction?name=${encodeURIComponent(factoryName)}`);
-    const data = await response.json();
+        let annualProductionChart; // Declare the chart variable globally
 
-    const years = data.map((row) => row.year);
-    const productions = data.map((row) => row.annual_production);
+        async function fetchProductionData(factoryName) {
+            try {
+                const response = await fetch(`/getProd?name=${encodeURIComponent(factoryName)}`);
+                const data = await response.json();
 
-    // Update the chart with fetched data
-    if (annualProductionChart) {
-      annualProductionChart.destroy();
-    }
+                const years = data.map((row) => row.year);
+                const productions = data.map((row) => row.annual_production);
 
-    const ctx = document.getElementById("annualProductionChart").getContext("2d");
-    annualProductionChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: years,
-        datasets: [
-          {
-            label: "Annual Production",
-            data: productions,
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: true },
-        },
-        scales: {
-          x: { title: { display: true, text: "Year" } },
-          y: { title: { display: true, text: "Annual Production" }, beginAtZero: true },
-        },
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching production data:", error);
-  }
-}
-      </script>
-      
+                const ctx = document.getElementById("annualProductionChart").getContext("2d");
+
+                // Destroy the existing chart if it exists
+                if (annualProductionChart) {
+                    annualProductionChart.destroy();
+                }
+
+                // Create a new chart instance
+                annualProductionChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: years,
+                        datasets: [
+                            {
+                                label: "Annual Production",
+                                data: productions,
+                                backgroundColor: "rgba(0, 51, 102, 1)",
+                                borderColor: "rgba(75, 192, 192, 1)",
+                                borderWidth: 2,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                        },
+                        scales: {
+                            x: { title: { display: true, text: "Year" } },
+                            y: { title: { display: true, text: "Annual Production" }, beginAtZero: true },
+                        },
+                    },
+                });
+            } catch (error) {
+                console.error("Error fetching production data:", error);
+            }
+        }
+
+        document.getElementById("productionDropdown").addEventListener("change", (event) => {
+            const factoryName = event.target.value;
+            fetchProductionData(factoryName);
+        });
+
+        fetch("/getFactories")
+            .then(response => response.json())
+            .then(data => {
+                const dropdown = document.getElementById("productionDropdown");
+                const uniqueFactories = Array.from(new Set(data.map(factory => factory.factory_name)));
+
+                uniqueFactories.forEach(factoryName => {
+                    const option = document.createElement("option");
+                    option.value = factoryName;
+                    option.text = factoryName;
+                    dropdown.add(option);
+                });
+            })
+            .catch(error => console.error("Error fetching factory data:", error));
+    </script>
 
     <script>
         // Fetch factory names and populate the dropdown
@@ -215,7 +238,6 @@ async function fetchProductionData(factoryName) {
             }
         }
 
-        // Function to fetch factory data and update the chart
         // Function to fetch factory data and update the chart
         async function fetchFactoryData(factoryName) {
             try {
@@ -252,8 +274,8 @@ async function fetchProductionData(factoryName) {
                             {
                                 label: "Annual Cost",
                                 data: annualCosts,
-                                borderColor: "#4CAF50",
-                                backgroundColor: "rgba(76, 175, 80, 0.2)",
+                                borderColor: "rgba(0, 51, 102, 1)",
+                                backgroundColor: "rgba(0, 51, 102, 0.7)",
                                 borderWidth: 2,
                                 pointBackgroundColor: "#4CAF50",
                                 pointBorderColor: "#fff",
@@ -324,7 +346,7 @@ async function fetchProductionData(factoryName) {
         document.addEventListener("DOMContentLoaded", populateFactoryDropdown);
 
     </script>
-    <script src="map.js"></script>
+
     <script>
         fetch('/getFactories')
             .then(response => response.json())
@@ -401,6 +423,7 @@ async function fetchProductionData(factoryName) {
             })
             .catch(error => console.error('Error fetching factory data:', error));
     </script>
+    <script src="map.js"></script>
 </body>
 
 </html>
