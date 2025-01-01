@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Closure Simulation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h3 {
+            color: #333;
+        }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        #summaryText {
+            background-color: #e0f7fa;
+            border: 1px solid #00acc1;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        #summaryText:hover {
+            background-color: #b2ebf2;
+            transform: scale(1.05);
+        }
+        .btn-primary {
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #00796b;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 25vh;
+            width: 100%;
+            max-width: 500px;
+        }
+        .form-select {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .col-md-6 {
+            margin-bottom: 10px;
+        }
+        .my-4, .my-5 {
+            margin-bottom: 10px;
+        }
+        .row {
+            margin-bottom: 15px;
+        }
+        .summary-container {
+            margin-top: 10px;
+        }
+        .back-button {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: #fff;
+            background: #005ea8;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+            width: 200px; /* Adjust the width as needed */
+        }
+
+        .back-button:hover {
+            background: #003f74;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Factory Closure Simulation</h1>
+        <a href="situation.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            <span>Back to Situation</span>
+        </a>
+        <div class="row my-4">
+            <div class="col-md-6">
+                <label for="closureSelector" class="form-label">Select Factories to Close:</label>
+                <select id="closureSelector" class="form-select" multiple>
+                    <option value="Wolfsburg">Wolfsburg</option>
+                    <option value="Zwickau">Zwickau</option>
+                    <option value="Emden">Emden</option>
+                    <option value="Hanover">Hanover</option>
+                    <option value="Dresden">Dresden</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="startYear" class="form-label">Closure Start Year:</label>
+                <select id="startYear" class="form-select">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="simulateBtn" class="btn btn-primary w-100">Run Simulation</button>
+
+        <div class="my-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="text-center">Cost Savings</h3>
+                    <div class="chart-container">
+                        <canvas id="costSavingsChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="text-center">Production Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="productionTrendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="summary" class="summary-container">
+            <h3 class="text-center">Summary</h3>
+            <p id="summaryText" class="text-center">Select factories and run the simulation to see the results.</p>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            Wolfsburg: [
+                { year: 2019, production: 950000, cost: 1850000000 },
+                { year: 2020, production: 900000, cost: 1900000000 },
+                { year: 2021, production: 920000, cost: 1950000000 },
+                { year: 2022, production: 940000, cost: 2000000000 },
+                { year: 2023, production: 950000, cost: 2050000000 },
+            ],
+            Zwickau: [
+                { year: 2019, production: 300000, cost: 660000000 },
+                { year: 2020, production: 310000, cost: 680000000 },
+                { year: 2021, production: 320000, cost: 700000000 },
+                { year: 2022, production: 330000, cost: 720000000 },
+                { year: 2023, production: 325000, cost: 740000000 },
+            ],
+            Emden: [
+                { year: 2019, production: 190000, cost: 560000000 },
+                { year: 2020, production: 195000, cost: 580000000 },
+                { year: 2021, production: 200000, cost: 600000000 },
+                { year: 2022, production: 205000, cost: 620000000 },
+                { year: 2023, production: 200000, cost: 640000000 },
+            ],
+            Hanover: [
+                { year: 2019, production: 170000, cost: 460000000 },
+                { year: 2020, production: 175000, cost: 480000000 },
+                { year: 2021, production: 180000, cost: 500000000 },
+                { year: 2022, production: 185000, cost: 520000000 },
+                { year: 2023, production: 175000, cost: 540000000 },
+            ],
+            Dresden: [
+                { year: 2019, production: 30000, cost: 140000000 },
+                { year: 2020, production: 32000, cost: 145000000 },
+                { year: 2021, production: 34000, cost: 150000000 },
+                { year: 2022, production: 36000, cost: 155000000 },
+                { year: 2023, production: 35000, cost: 160000000 },
+            ],
+        };
+
+        let costChart = null;
+        let productionChart = null;
+
+        document.getElementById('simulateBtn').addEventListener('click', () => {
+            const selectedFactories = Array.from(document.getElementById('closureSelector').selectedOptions).map(opt => opt.value);
+            const startYear = parseInt(document.getElementById('startYear').value);
+
+            let totalSavings = 0;
+            let remainingProduction = 0;
+
+            const costSavingsData = [];
+            const productionTrendsData = [];
+
+            for (let year = startYear; year <= 2026; year++) {
+                let yearSavings = 0;
+                let yearProduction = 0;
+
+                Object.entries(data).forEach(([factory, stats]) => {
+                    if (!selectedFactories.includes(factory)) {
+                        const stat = stats.find(s => s.year === 2023);
+                        yearSavings += stat.cost;
+                        yearProduction += stat.production;
+                    }
+                });
+
+                costSavingsData.push({ year, savings: yearSavings });
+                productionTrendsData.push({ year, production: yearProduction });
+                totalSavings += yearSavings;
+                remainingProduction += yearProduction;
+            }
+
+            updateCharts(costSavingsData, productionTrendsData);
+            updateSummary(totalSavings, remainingProduction);
+        });
+
+        function updateCharts(costData, productionData) {
+            if (costChart) costChart.destroy();
+            if (productionChart) productionChart.destroy();
+
+            const costCtx = document.getElementById('costSavingsChart').getContext('2d');
+            costChart = new Chart(costCtx, {
+                type: 'line',
+                data: {
+                    labels: costData.map(d => d.year),
+                    datasets: [{
+                        label: 'Cost Savings ($)',
+                        data: costData.map(d => d.savings),
+                        borderColor: '#00796b',  // Dark teal
+                        backgroundColor: 'rgba(0, 121, 107, 0.2)', // Light teal
+                        tension: 0.4,
+                        fill: true,
+                        pointBorderColor: '#004d40',
+                        pointBackgroundColor: '#ffffff',
+                        pointRadius: 5,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    animations: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'easeOutBounce',
+                            from: 0.1,
+                            to: 0.4,
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#00796b',
+                            borderWidth: 2
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                color: '#333',
+                                font: { size: 12 }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Cost Savings ($)',
+                                color: '#333',
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const productionCtx = document.getElementById('productionTrendsChart').getContext('2d');
+            productionChart = new Chart(productionCtx, {
+                type: 'line',
+                data: {
+                    labels: productionData.map(d => d.year),
+                    datasets: [{
+                        label: 'Production (Units)',
+                        data: productionData.map(d => d.production),
+                        borderColor: '#ff7043',  // Dark orange
+                        backgroundColor: 'rgba(255, 112, 67, 0.2)',  // Light orange
+                        tension: 0.4,
+                        fill: true,
+                        pointBorderColor: '#e64a19',
+                        pointBackgroundColor: '#ffffff',
+                        pointRadius: 5,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    animations: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'easeOutBounce',
+                            from: 0.1,
+                            to: 0.4,
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#ff7043',
+                            borderWidth: 2
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                color: '#333',
+                                font: { size: 12 }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Production Units',
+                                color: '#333',
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSummary(totalSavings, remainingProduction) {
+            document.getElementById('summaryText').textContent = `By closing the selected factories, you can save a total of $${totalSavings.toLocaleString()} and maintain a production of ${remainingProduction.toLocaleString()} units by 2026.`;
+        }
+    </script>
+</body>
+</html>

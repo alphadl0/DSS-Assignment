@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Closure Simulation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center">Factory Closure Simulation</h1>
+        <form method="post">
+            <div class="row my-4">
+                <div class="col-md-6">
+                    <label for="factories" class="form-label">Select Factories to Close:</label>
+                    <select id="factories" name="factories" class="form-select" multiple>
+                        <option value="Wolfsburg">Wolfsburg</option>
+                        <option value="Zwickau">Zwickau</option>
+                        <option value="Emden">Emden</option>
+                        <option value="Hanover">Hanover</option>
+                        <option value="Dresden">Dresden</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="startYear" class="form-label">Closure Start Year:</label>
+                    <select id="startYear" name="startYear" class="form-select">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Run Simulation</button>
+        </form>
+
+        {% if chart_img %}
+        <div class="my-5">
+            <h3 class="text-center">Cost Savings</h3>
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ chart_img }}" alt="Cost Savings Chart">
+            </div>
+        </div>
+
+        <div class="my-5">
+            <h3 class="text-center">Production Trends</h3>
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ chart_img }}" alt="Production Trends Chart">
+            </div>
+        </div>
+
+        <div id="summary" class="my-5">
+            <h3 class="text-center">Summary</h3>
+            <p class="text-center">{{ summary }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
