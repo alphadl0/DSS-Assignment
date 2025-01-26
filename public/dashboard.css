@@ -1,4 +1,4 @@
-/* Body and General Styling */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -19,7 +19,7 @@ h1 {
     font-size: 20px; /* Reduced font size */
 }
 
-/* Info Boxes Styling */
+
 .info-container {
     display: flex;
     flex-wrap: wrap;
@@ -73,7 +73,7 @@ h1 {
     color: #ffffff;
 }
 
-/* Buttons Styling */
+
 .buttons {
     text-align: center;
     margin: 20px 0;
@@ -98,7 +98,7 @@ button:hover {
     transform: scale(1.1);
 }
 
-/* Chart Container Styling */
+
 #chartsContainer {
     display: flex;
     justify-content: center;

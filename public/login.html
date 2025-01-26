@@ -34,7 +34,7 @@
         </form>
     </div>
 
-    <!-- Welcome Modal -->
+    
     <div class="welcome-modal" id="welcomeModal">
         <div class="welcome-message">
             <h2>Hoşgeldiniz Alpha Diallo</h2>
@@ -48,29 +48,29 @@
         const welcomeModal = document.getElementById('welcomeModal');
 
         loginForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Prevent form from submitting
+            e.preventDefault(); 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
 
             loginButton.disabled = true;
             spinner.style.display = 'inline-block';
 
-            // Simulate server delay
+            
             setTimeout(() => {
                 spinner.style.display = 'none';
                 loginButton.disabled = false;
 
                 if (username === 'alpha' && password === 'alpha') {
-                    // Show welcome modal if credentials are correct
+                    
                     welcomeModal.classList.add('active');
                     setTimeout(() => {
-                        window.location.href = '/dashboard.html'; // Redirect to dashboard
-                    }, 2000); // Display modal for 2 seconds
+                        window.location.href = '/dashboard.html'; 
+                    }, 2000); 
                 } else {
-                    // Show error message for incorrect credentials
+                    
                     alert('Geçersiz kullanıcı adı veya şifre');
                 }
-            }, 1500); // Simulate server processing time
+            }, 1500); 
         });
     </script>
 

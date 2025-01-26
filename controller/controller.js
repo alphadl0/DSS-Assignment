@@ -1,12 +1,12 @@
 const path = require("path");
 const db = require("../db/mysql_connect");
 
-// Redirect root URL to login page
+
 const redirectToLogin = (req, res) => {
   res.redirect("/login.html");
 };
 
-// Login logic
+
 const login = (req, res) => {
   const { username, password } = req.body;
   if (username === "alpha" && password === "alpha") {
@@ -17,7 +17,7 @@ const login = (req, res) => {
   }
 };
 
-// Middleware to check if user is authenticated
+
 const isAuthenticated = (req, res, next) => {
   if (req.session.user) {
     next();
@@ -26,7 +26,7 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-// Dashboard route logic
+
 const dashboard = (req, res) => {
   res.sendFile(path.join(__dirname, "../public/dashboard.html"));
 };
@@ -144,7 +144,7 @@ const getProd = (req, res) => {
   });
 };
 
-// Fetch data logic
+
 const getData = (req, res) => {
   const { type } = req.params;
 

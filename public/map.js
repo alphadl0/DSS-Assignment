@@ -1,28 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const map = L.map('map').setView([51.1657, 10.4515], 6); // Centered on Germany
+    const map = L.map('map').setView([51.1657, 10.4515], 6); 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Define a red marker icon
+    
     const redIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', // Correct URL for red marker
-        iconSize: [25, 41], // Size of the icon
-        iconAnchor: [12, 41], // Anchor point of the icon
-        popupAnchor: [1, -34], // Point from which the popup opens relative to the iconAnchor
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34], 
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-        shadowSize: [41, 41] // Size of the shadow
+        shadowSize: [41, 41] 
     });
 
-    // Define a blue marker icon
+    
     const blueIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png', // Correct URL for blue marker
-        iconSize: [25, 41], // Size of the icon
-        iconAnchor: [12, 41], // Anchor point of the icon
-        popupAnchor: [1, -34], // Point from which the popup opens relative to the iconAnchor
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png', 
+        iconSize: [25, 41],
+        iconAnchor: [12, 41], 
+        popupAnchor: [1, -34], 
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-        shadowSize: [41, 41] // Size of the shadow
+        shadowSize: [41, 41]
     });
 
     const locations = [

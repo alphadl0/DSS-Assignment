@@ -1,7 +1,7 @@
-let chart; // Main chart
-let revenueCostsChart; // Revenue-Costs chart
+let chart; 
+let revenueCostsChart; 
 
-// Function to fetch and display charts
+
 function fetchDataAndDisplayChart(type, label, unit) {
   fetch(`/getData/${type}`)
     .then((response) => response.json())
@@ -26,7 +26,7 @@ function fetchDataAndDisplayChart(type, label, unit) {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false, // Allows height/width customization
+          maintainAspectRatio: false, 
           plugins: {
             legend: { display: true, position: "bottom" },
             title: { display: true, text: label },
@@ -38,7 +38,7 @@ function fetchDataAndDisplayChart(type, label, unit) {
     .catch((err) => console.error(`Error fetching data: ${err.message}`));
 }
 
-// Function for Revenue and Costs Chart
+
 function fetchRevenueAndCosts() {
   fetch("/getData/revenueCosts")
     .then((response) => response.json())
@@ -58,32 +58,32 @@ function fetchRevenueAndCosts() {
           labels: labels,
           datasets: [
             {
-              label: "Gelir (Milyon Euro)", // Revenue
+              label: "Gelir (Milyon Euro)", 
               data: revenue,
               borderColor: "rgb(2, 106, 35)",
               backgroundColor: "rgba(45, 45, 45, 0.2)",
               borderWidth: 2,
               fill: true,
-              tension: 0.4, // Smooth curve
+              tension: 0.4, 
             },
             {
-              label: "Maliyetler (Milyon Euro)", // Costs
+              label: "Maliyetler (Milyon Euro)",
               data: costs,
               borderColor: "rgb(206, 55, 5)",
               backgroundColor: "rgba(255, 99, 132, 0.2)",
               borderWidth: 2,
               fill: true,
-              tension: 0.4, // Smooth curve
+              tension: 0.4, 
             },
           ],
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false, // Allows height/width customization
+          maintainAspectRatio: false, 
           plugins: {
             legend: {
               display: true,
-              position: "bottom", // Legend at the bottom
+              position: "bottom", 
             },
             title: {
               display: true,
@@ -95,13 +95,13 @@ function fetchRevenueAndCosts() {
               beginAtZero: true,
               title: {
                 display: true,
-                text: "Milyon Euro", // Y-axis label
+                text: "Milyon Euro",
               },
             },
             x: {
               title: {
                 display: true,
-                text: "Yıllar", // X-axis label
+                text: "Yıllar", 
               },
             },
           },
@@ -113,7 +113,7 @@ function fetchRevenueAndCosts() {
     );
 }
 
-// Function for Expenses Chart
+
 function fetchExpenses() {
   fetch("/getData/expenses")
     .then((response) => response.json())
@@ -144,7 +144,7 @@ function fetchExpenses() {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false, // Allows height/width customization
+          maintainAspectRatio: false, 
           plugins: {
             legend: { display: true, position: "bottom" },
             title: {
@@ -161,7 +161,7 @@ function fetchExpenses() {
     );
 }
 
-// Generate random colors for bars
+
 function getRandomColor() {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
@@ -169,13 +169,13 @@ function getRandomColor() {
   return `rgba(${r}, ${g}, ${b}, 0.7)`;
 }
 
-// Automatically load "Giderler" and "Gelir ve Maliyetler" charts on page load
+
 document.addEventListener("DOMContentLoaded", () => {
-  fetchExpenses(); // Automatically fetch and display the Expenses chart
-  fetchRevenueAndCosts(); // Automatically fetch and display the Revenue and Costs chart
+  fetchExpenses(); 
+  fetchRevenueAndCosts();
 });
 
-// Event Listeners for other charts
+
 document.getElementById("btnSales").addEventListener("click", () => {
   fetchDataAndDisplayChart("salesamount", "Toplam satışlar", "Binlerce");
 });
